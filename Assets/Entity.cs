@@ -3,22 +3,32 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+public enum WillType { Direction, Target}
+
 public class Entity : MonoBehaviour
 {
   [HideInInspector]
   public Dictionary<Type, Item> items = new Dictionary<Type, Item>();
-  Item movementItem;
-  Item modelItem;
+  public IMovementItem movementItem;
+  IModelItem modelItem;
+  public WillType willType;
+  public Vector3 willDirection;
+  public Vector3 willTarget;
 
   public T GetItem<T> () where T: Item
   {
     return (T) items[typeof (T)];
   }
 
-  void Awake()
+  public virtual void FixedUpdate()
   {
-    gameObject.AddComponent<MeshFilter>();
-    var mr = gameObject.AddComponent<MeshRenderer>();
+    if(movementItem!= null) movementItem.Move();
+  }
+
+  public virtual void Awake()
+  {
+    if (!gameObject.GetComponent<MeshFilter>()) gameObject.AddComponent<MeshFilter>();
+    var mr = gameObject.GetComponent<MeshRenderer>() ?? gameObject.AddComponent<MeshRenderer>();
     mr.material = new Material(Shader.Find("Diffuse"));
   }
   public static Entity Create(List<Type> items = null)

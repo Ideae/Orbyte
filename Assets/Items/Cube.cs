@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-[ItemInfo(ItemType.Model)]
+[ItemInfo]
 public class Cube : Item
 {
   public Mesh cube;

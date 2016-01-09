@@ -1,6 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Hop : Item {
-  
+[CreateAssetMenu]
+public class Hop : Item, IMovementItem
+{
+  public Trait<bool> hop = true;
+  public void Move()
+  {
+    throw new System.NotImplementedException();
+  }
 }

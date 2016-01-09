@@ -29,7 +29,7 @@ public class Walk : Item, IMovementItem
     }
     float speed = run ? runSpeed : walkSpeed;
     //print(speed);
-    GetComponent<Rigidbody>().MovePosition(transform.position + Vector3.ClampMagnitude(v, speed));
+    gameObject.GetComponent<Rigidbody>().MovePosition(transform.position + Vector3.ClampMagnitude(v, speed));
     
 
   }

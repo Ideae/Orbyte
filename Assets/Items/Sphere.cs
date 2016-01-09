@@ -1,13 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
-
-public class Sphere : Item {
+[ItemInfo, CreateAssetMenu(menuName = "OrbyteItems/Sphere")]
+public class Sphere : Item, IModelItem
+{
   public Mesh sphere;
   public override void OnAttatch()
   {
     base.OnAttatch();
-    GetComponent<MeshFilter>().sharedMesh = sphere;
-    var bc = entity.GetComponent<Collider>();
+    gameObject.GetComponent<MeshFilter>().sharedMesh = sphere;
+    var bc = gameObject.GetComponent<Collider>();
     if (bc) Destroy(bc);
     gameObject.AddComponent<SphereCollider>();
   }

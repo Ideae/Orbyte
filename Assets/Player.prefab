@@ -11,8 +11,10 @@ GameObject:
   - 33: {fileID: 3322756}
   - 23: {fileID: 2307800}
   - 135: {fileID: 13584930}
-  - 114: {fileID: 11401462}
   - 114: {fileID: 11475836}
+  - 54: {fileID: 5485856}
+  - 114: {fileID: 11447894}
+  - 114: {fileID: 11411310}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -65,7 +67,22 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 116314}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &11401462
+--- !u!54 &5485856
+Rigidbody:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 116314}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &11411310
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -73,14 +90,33 @@ MonoBehaviour:
   m_GameObject: {fileID: 116314}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d36d11e58162494eb55adc40c14b904, type: 3}
+  m_Script: {fileID: 11500000, guid: 072dd36aae45ff547904360b0f3f3a53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _id: -1
+  dbg: 0
   visible: 0
   editable: 0
   entity: {fileID: 0}
   affectRange: 0
-  cube: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &11447894
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 116314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d0ff86da5773ae439acc64726f663e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _id: -1
+  dbg: 0
+  visible: 0
+  editable: 0
+  entity: {fileID: 0}
+  affectRange: 0
+  sphere: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!114 &11475836
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -92,9 +128,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e38ef96f6475ad439d966c5c2b3c578, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _id: -1
+  dbg: 0
+  _serializationData:
+    serializedObjects: []
+    serializedStrings:
+      keys:
+      - IMovementItem movementItem
+      - WillType willType
+      - Vector3 willDirection
+      - Vector3 willTarget
+      - List<Item> items
+      values:
+      - null
+      - '"Direction"'
+      - '{"x":0.0,"y":0.0,"z":0.0}'
+      - '{"x":0.0,"y":0.0,"z":0.0}'
+      - '{"$content":[]}'
   willType: 0
   willDirection: {x: 0, y: 0, z: 0}
   willTarget: {x: 0, y: 0, z: 0}
+  items: []
 --- !u!135 &13584930
 SphereCollider:
   m_ObjectHideFlags: 1

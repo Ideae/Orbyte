@@ -2,14 +2,19 @@
 using UnityEngine;
 using System.Collections;
 [Serializable]
-public class Trait<T>
+public class Trait<T> where T: new()
 {
   public bool enabled;
   public bool visible;
   public static int Priority;
   public T value;
 
-  private Trait(T val)
+  public Trait()
+  {
+    value = new T();
+  }
+
+  public Trait(T val)
   {
     value = val;
   }

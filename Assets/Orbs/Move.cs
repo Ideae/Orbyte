@@ -9,11 +9,13 @@ using UnityEngine;
 public class Move : Orb
 {
   public float speed = 5;
+  public float boost = 10;
   public override void AffectSelf()
   {
     float x = Input.GetAxis("Horizontal");
     float y = Input.GetAxis("Vertical");
-    node.rb.AddForce(new Vector2(x, y) * speed);
+    float b = Input.GetKey(KeyCode.LeftShift) ? boost : 0f;
+    node.rb.AddForce(new Vector2(x, y) * (speed+b));
     //print(x + " : " + y);
     
   }

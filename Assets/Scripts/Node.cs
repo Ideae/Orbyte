@@ -11,22 +11,36 @@ public class Node : BaseBehaviour
   public Room room;
   [PerItem, Inline] public List<Orb> orbs = new List<Orb>();
   public Rigidbody2D rb => GetComponent<Rigidbody2D>();
-
+  public MeshRenderer mr => GetComponent<MeshRenderer>();
   
-
   public event Action<Node> OnOrbsChanged;
+  public Orb AimedActionOrb;
+  public Core core;
   
-  public void Start()
+  public void Awake()
   {
-
     var orbPrefabs = orbs;
     orbs = new List<Orb>();
     foreach (Orb o in orbPrefabs)
     {
-      AddOrb(Instantiate(o));
+      Orb oo = Instantiate(o);
+      AddOrb(oo);
+      if (o.GetType() == typeof(Core)) core = (Core)oo;
+    }
+    if (core == null)
+    {
+      core = Orb.CreateOrb<Core>(this);
+      orbs.Insert(0, core);
     }
   }
-
+public T GetOrb<T>() where T : Orb
+  {
+    foreach(Orb o in orbs)
+    {
+      if (o.GetType() == typeof(T)) return (T)o;
+    }
+    return null;
+  }
   public void AddOrb(Orb o, int? index = null)
   {
     o.node = this;
@@ -49,7 +63,7 @@ public class Node : BaseBehaviour
     foreach(Orb o in orbs)
     {
       o.AffectSelf();
-
+      o.Draw();
     }
   }
   public void AffectOther(Node other)
@@ -67,5 +81,13 @@ public class Node : BaseBehaviour
       o.FixedAffectOther(other);
     }
   }
-  
+
+  public void DeleteNode()
+  {
+    foreach(var o in orbs)
+    {
+      o.OnDelete();
+    }
+    Destroy(gameObject);
+  }
 }

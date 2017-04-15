@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Room : MonoBehaviour {
+  public Node NodePrefab;
+  public GameObject SceneNodes;
   public List<Node> nodes = new List<Node>();
 	// Use this for initialization
 	void Start ()
@@ -23,6 +25,11 @@ public class Room : MonoBehaviour {
   // Update is called once per frame
   void Update()
   {
+    if (Input.GetKeyDown(KeyCode.Delete))
+    {
+      DeleteAllNodes();
+    }
+
     for (int i = 0; i < nodes.Count; i++)
     {
       Node n1 = nodes[i];
@@ -33,6 +40,7 @@ public class Room : MonoBehaviour {
         n2.AffectOther(n1);
       }
     }
+
   }
 
   void FixedUpdate()
@@ -46,6 +54,30 @@ public class Room : MonoBehaviour {
         n1.FixedAffectOther(n2);
         n2.FixedAffectOther(n1);
       }
+    }
+  }
+
+  public Node SpawnNode(Vector2 pos, List<Orb> orbs = null)
+  {
+    Node node = Instantiate(NodePrefab, SceneNodes.transform);
+    node.transform.position = new Vector3(pos.x, pos.y, gameObject.transform.position.z);
+    if (orbs != null)
+    {
+      node.orbs = orbs;
+      
+    }
+    nodes.Add(node);
+    return node;
+  }
+  void DeleteAllNodes()
+  {
+    for(int i = 0; i < nodes.Count; i++)
+    {
+      var n = nodes[i];
+      if (n.GetOrb<Player>() != null) continue;
+      n.DeleteNode();
+      nodes.RemoveAt(i);
+      i--;
     }
   }
 }

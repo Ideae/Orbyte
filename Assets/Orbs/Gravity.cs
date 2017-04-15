@@ -10,6 +10,7 @@ public class Gravity : Orb
 {
   public float multiplier = 1.0f;
   public float deadzone = 0.1f;
+
   public override void FixedAffectOther(Node other)
   {
     Vector3 dir = node.transform.position - other.transform.position;
@@ -20,6 +21,20 @@ public class Gravity : Orb
       Vector3 f = dir.normalized * force;
       other.rb.AddForce(f);
     }
-
   }
+
+  public override void Draw()
+  {
+    node.mr.material.SetFloat("_Frequency", multiplier/5f);
+  }
+
+  public override void OnAttach()
+  {
+    node.mr.material.SetFloat("_Gravity", 1);
+  }
+  public override void OnDetach()
+  {
+    node.mr.material.SetFloat("_Gravity", 0);
+  }
+
 }

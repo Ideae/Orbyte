@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -6,16 +7,14 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI.Extensions;
 
 public class UIManager : Singleton<UIManager> {
-
-
-
+  
   public OrbList playerOrbList;
   public OrbList otherOrbList;
   public Node SelectedNode { get; private set; }
   public Player Player { get; private set; }
   public Room CurrentRoom { get; private set; }
 
-
+  
   void Start()
   {
   }
@@ -50,7 +49,14 @@ public class UIManager : Singleton<UIManager> {
       {
         Vector2 v = r.GetPoint(enter);
         var coll = Physics2D.OverlapPoint(v);
-        SelectNode(coll?.gameObject.GetComponent<Node>());
+        if (Player.node.AimedActionOrb != null)
+        {
+          Player.node.AimedActionOrb.AimedAction(v);
+        }
+        else
+        {
+          SelectNode(coll?.gameObject.GetComponent<Node>());
+        }
       }
     }
   }

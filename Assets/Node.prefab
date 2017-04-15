@@ -57,7 +57,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: c0b4944ebf68f2b4aba761d1b142e92e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -129,5 +129,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5aeadfd2b220a15409dce71570a26246, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _id: 10908
+  dbg: 0
+  Prefs:
+    _Buckets: 01000000ffffffff03000000ffffffff020000000500000004000000
+    _HashCodes: edc3f729661a795b90c4df5d50d2751f230516442205164400000000
+    _Next: ffffffffffffffffffffffffffffffffffffffff0000000000000000
+    _Count: 6
+    _Version: 2132
+    _FreeList: -1
+    _FreeCount: 0
+    _Keys: edc3f7a9661a79db90c4df5d50d2759f230516442205164400000000
+    _Values:
+    - ValueString: 
+      ValueFloat: 8
+      Type: 0
+    - ValueString: 
+      ValueFloat: 0
+      Type: 0
+    - ValueString: 
+      ValueFloat: 0
+      Type: 2
+    - ValueString: 
+      ValueFloat: 0
+      Type: 2
+    - ValueString: 
+      ValueFloat: 14
+      Type: 1
+    - ValueString: 
+      ValueFloat: 408
+      Type: 1
+    - ValueString: 
+      ValueFloat: 0
+      Type: 0
   room: {fileID: 0}
   orbs: []

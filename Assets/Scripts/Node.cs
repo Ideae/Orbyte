@@ -27,11 +27,12 @@ public class Node : BaseBehaviour
     }
   }
 
-  public void AddOrb(Orb o)
+  public void AddOrb(Orb o, int? index = null)
   {
     o.node = this;
     o.OnAttach();
-    orbs.Add(o);
+    if(index.HasValue && orbs.Count > index.Value) orbs.Insert(index.Value, o); 
+    else orbs.Add(o);
     OnOrbsChanged?.Invoke(this);
   }
 

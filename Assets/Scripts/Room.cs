@@ -5,7 +5,9 @@ using UnityEngine;
 public class Room : MonoBehaviour {
   public List<Node> nodes = new List<Node>();
 	// Use this for initialization
-	void Start () {
+	void Start ()
+	{
+	    UIManager.Instance.RegisterRoom(this);
     var ns = FindObjectsOfType<Node>();
     foreach(Node n in ns)
     {

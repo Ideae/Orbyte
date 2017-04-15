@@ -6,19 +6,17 @@ using UnityEngine;
 public class OrbList : MonoBehaviour {
   public GameObject content;
   public GameObject buttonPrefab;
-  private Node node;
-	// Use this for initialization
-  private Dictionary<Orb, OrbButton> orbButtons = new Dictionary<Orb, OrbButton>();
+  public Node node;
 
   public void SetNode(Node n) {
 
-	  if (node != n)
+      gameObject.SetActive(n != null);
+        if (node != n)
 	  {
-	    foreach (var orbButton in orbButtons.Values)
+	    foreach (var orbButton in content.transform.Children())
 	    {
 	      Destroy(orbButton.gameObject);
 	    }
-      orbButtons.Clear();
 	    if (n != null)
 	    {
 	      n.OnOrbsChanged -= UpdateButtonList;
@@ -30,25 +28,26 @@ public class OrbList : MonoBehaviour {
         UpdateButtonList(node);
 	    }
       
-	    gameObject.SetActive(node != null);
 
 	  }
 	}
 
-	
-	// Update is called once per frame
-	public void Update () {
+
+
+    // Update is called once per frame
+    public void Update () {
 
 	  
-  }
+    }
 
   public void UpdateButtonList(Node n)
   {
-    foreach (Orb o in n.orbs.Where(o=>!orbButtons.ContainsKey(o)))
+      var orbButtons = content.transform.Children()
+            .Select(c => c.GetComponent<OrbButton>()?.orb).ToSet();
+    foreach (Orb o in n.orbs.Where(o=>!orbButtons.Contains(o)))
     {
       var b = Instantiate(buttonPrefab, content.transform);
       var orbButton = b.GetComponent<OrbButton>();
-      orbButtons[o] = orbButton;
       orbButton.Setup(o);
     }
   }

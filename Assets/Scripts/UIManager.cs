@@ -14,7 +14,7 @@ public class UIManager : Singleton<UIManager> {
 
   void Start()
   {
-    
+     
   }
 
   public void SelectNode(Node n)

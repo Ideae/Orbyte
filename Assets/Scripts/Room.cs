@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class Room : MonoBehaviour {
@@ -29,32 +28,6 @@ public class Room : MonoBehaviour {
     {
       DeleteAllNodes();
     }
-
-    for (int i = 0; i < nodes.Count; i++)
-    {
-      Node n1 = nodes[i];
-      for (int j = i + 1; j < nodes.Count; j++)
-      {
-        Node n2 = nodes[j];
-        n1.AffectOther(n2);
-        n2.AffectOther(n1);
-      }
-    }
-
-  }
-
-  void FixedUpdate()
-  {
-    for (int i = 0; i < nodes.Count; i++)
-    {
-      Node n1 = nodes[i];
-      for (int j = i + 1; j < nodes.Count; j++)
-      {
-        Node n2 = nodes[j];
-        n1.FixedAffectOther(n2);
-        n2.FixedAffectOther(n1);
-      }
-    }
   }
 
   public Node SpawnNode(Vector2 pos, List<Orb> orbs = null)
@@ -63,7 +36,7 @@ public class Room : MonoBehaviour {
     node.transform.position = new Vector3(pos.x, pos.y, gameObject.transform.position.z);
     if (orbs != null)
     {
-      node.orbs = orbs;
+      node.AddOrbs(orbs);
       
     }
     nodes.Add(node);

@@ -10,6 +10,8 @@ public class Core : Orb<Core>
 
 	[SerializeField] [HideInInspector] float _Radius = 0.5f;
 
+	[SerializeField] [HideInInspector] bool _Fixed = false;
+
 	[Show]
 	[CustomProperty(nameof(_Collidable))]
 	public bool Collidable
@@ -18,7 +20,8 @@ public class Core : Orb<Core>
 		set
 		{
 			_Collidable = value;
-			Node.GetComponent<Collider2D>().enabled = value;
+			if (Node != null)
+				Node.GetComponent<Collider2D>().enabled = value;
 		}
 	}
 
@@ -30,7 +33,7 @@ public class Core : Orb<Core>
 		set
 		{
 			_Radius = value;
-			var c = Node.GetComponent<CircleCollider2D>();
+			var c = Node?.GetComponent<CircleCollider2D>();
 			if (c != null) c.radius = value;
 		}
 	}
@@ -45,13 +48,45 @@ public class Core : Orb<Core>
 			if (value == 0)
 			{
 				_LayerMask = 1;
-				Node.gameObject.layer = _LayerMask;
+				if (Node != null) Node.gameObject.layer = _LayerMask;
 			}
 			else if ((value & (value - 1)) == 0) //floor(log(value))==log(value)
 			{
 				_LayerMask = value;
-				Node.gameObject.layer = _LayerMask;
+				if (Node != null) Node.gameObject.layer = _LayerMask;
 			}
 		}
+	}
+
+	[Show]
+	[CustomProperty(nameof(_Fixed))]
+	public bool Fixed
+	{
+		get { return _Fixed; }
+		set
+		{
+			_Fixed = value;
+			if (Node != null)
+			{
+				if (value)
+				{
+					Node.RB.constraints = RigidbodyConstraints2D.FreezePosition;
+					Node.RB.bodyType = RigidbodyType2D.Static;
+				}
+				else
+				{
+					Node.RB.constraints = RigidbodyConstraints2D.None;
+					Node.RB.bodyType = RigidbodyType2D.Dynamic;
+				}
+			}
+		}
+	}
+
+	public override void OnActivate()
+	{
+		Collidable = _Collidable;
+		Radius = _Radius;
+		LayerMask = _LayerMask;
+		Fixed = _Fixed;
 	}
 }

@@ -98,7 +98,9 @@ public class Node : BaseBehaviour
 
 		if (core == null)
 		{
-			core = Core.CreateOrb();
+
+			core = Core.GetDefault();
+			core.IsActive = true;
 			AddOrb(core);
 		}
 	}
@@ -208,7 +210,6 @@ public class Node : BaseBehaviour
 
 	public void DeleteAllOrbs(bool skipCore = false)
 	{
-		print("Cause I think");
 		foreach (var o in new List<Orb>(orbs))
 		{
 			if (skipCore && ReferenceEquals(o, core)) continue;
@@ -233,6 +234,7 @@ public class Node : BaseBehaviour
 		if (orb is IMovementOrb) MovementOrb = (IMovementOrb)orb;
 		if (orb is IActionOrb) ActionOrb = (IActionOrb)orb;
 		if (orb is IAimedActionOrb) AimedActionOrb = (IAimedActionOrb)orb;
+		if (orb is Core) core = (Core)orb;
 	}
 
 	public void OnDeactivateOrb(Orb orb)
@@ -242,6 +244,7 @@ public class Node : BaseBehaviour
 		if (ReferenceEquals(orb, MovementOrb)) MovementOrb = null;
 		if (ReferenceEquals(orb, ActionOrb)) ActionOrb = null;
 		if (ReferenceEquals(orb, AimedActionOrb)) AimedActionOrb = null;
+		
 	}
 
 	public void AddOrbs(List<Orb> list, bool clone = false)

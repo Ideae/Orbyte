@@ -4,7 +4,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Orbs/" + nameof(Bomb))]
 public class Bomb : Orb<Bomb>, IActionOrb
 {
-	public float multiplier = 100f;
+	public float multiplier = 2000f;
 	public float deadzone = 0.1f;
 	public void OnActionDown()
 	{

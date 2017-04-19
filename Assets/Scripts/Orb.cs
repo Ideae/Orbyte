@@ -60,6 +60,18 @@ public abstract class Orb<T> : Orb where T : Orb<T>
 
 	public static T CreateOrb() => CreateInstance<T>();
 
+	public static T GetDefault()
+	{
+		foreach (Orb o in DefaultOrbs)
+		{
+			if (o.GetType() == typeof(T))
+			{
+				return (T)o.Clone();
+			}
+		}
+		return null;
+	}
+
 	void Awake()
 	{
 		//sets all CustomProperties that need to have their setters called
@@ -92,7 +104,7 @@ public abstract class Orb : BaseScriptableObject, IOrbType
 {
 	[HideInInspector] public static readonly Type[] AllOrbTypes;
 	[HideInInspector] public static List<Orb> DefaultOrbs;
-	public Node _node;
+	[NonSerialized] public Node _node;
 
 	static Orb()
 	{

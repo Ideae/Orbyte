@@ -247,7 +247,7 @@ Prefab:
     - target: {fileID: 224092700404446856, guid: dbe78d513b0b5b24b8cfd1c6ab79bc24,
         type: 2}
       propertyPath: m_SizeDelta.x
-      value: -468
+      value: -1035
       objectReference: {fileID: 0}
     - target: {fileID: 114899160776589364, guid: dbe78d513b0b5b24b8cfd1c6ab79bc24,
         type: 2}
@@ -352,7 +352,7 @@ Prefab:
     - target: {fileID: 224092700404446856, guid: dbe78d513b0b5b24b8cfd1c6ab79bc24,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 0.0000038146973
+      value: 0.000030517578
       objectReference: {fileID: 0}
     - target: {fileID: 224413171290667506, guid: dbe78d513b0b5b24b8cfd1c6ab79bc24,
         type: 2}
@@ -470,8 +470,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b28178d24ef4ef04b9c662b19deecafe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerOrbList: {fileID: 545785549}
   otherOrbList: {fileID: 1861980590}
+  playerOrbList: {fileID: 545785549}
 --- !u!1001 &366363806
 Prefab:
   m_ObjectHideFlags: 0
@@ -1732,8 +1732,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NodePrefab: {fileID: 114843579472707432, guid: 3d9b844f29277ad489de8eb12c9ccc86,
     type: 2}
-  SceneNodes: {fileID: 911140345}
   nodes: []
+  SceneNodes: {fileID: 911140345}
 --- !u!1 &1685614709
 GameObject:
   m_ObjectHideFlags: 0

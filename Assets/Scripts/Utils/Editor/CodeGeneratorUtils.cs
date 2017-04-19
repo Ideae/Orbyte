@@ -76,6 +76,7 @@ namespace CodeGeneration
 
         static string OnProjectFileGeneration(string name, string content)
         {
+	        if (name != "Orbyte.Editor.csproj") return content;
             // parse the document and make some changes  
             var document = XDocument.Parse(content);
             var project = document.Root;
@@ -101,15 +102,6 @@ namespace CodeGeneration
             document.Save(str);
 
             return str.ToString();
-        }
-
-        class AutoCodeGenerator : UnityEditor.AssetModificationProcessor
-        {
-            static string[] OnWillSaveAssets(string[] args)
-            {
-                Generate();
-                return args;
-            }
         }
     }
 

@@ -4,6 +4,8 @@ using Vexe.Runtime.Types;
 [CreateAssetMenu(menuName = "Orbs/" + nameof(Core))]
 public class Core : Orb<Core>
 {
+	const float MIN_RADIUS = 0.01f;
+
 	[SerializeField] [HideInInspector] bool _Collidable = true;
 
 	[SerializeField] [HideInInspector] LayerMask _LayerMask = 1;
@@ -11,6 +13,26 @@ public class Core : Orb<Core>
 	[SerializeField] [HideInInspector] float _Radius = 0.5f;
 
 	[SerializeField] [HideInInspector] bool _Fixed = false;
+
+	[SerializeField] [HideInInspector] Color _mainColor = Color.white;
+
+	[Show] [CustomProperty(nameof(_mainColor))]
+	public Color MainColor
+	{
+		get { return _mainColor; }
+		set
+		{
+			_mainColor = value;
+
+			if (Node != null)
+			{
+				Material material = Application.isEditor && !Application.isPlaying ? _node.GetComponent<MeshRenderer>().sharedMaterial : Node.MR.material;
+				material.color = value;
+			}
+		}
+	}
+
+
 
 	[Show]
 	[CustomProperty(nameof(_Collidable))]
@@ -32,9 +54,14 @@ public class Core : Orb<Core>
 		get { return _Radius; }
 		set
 		{
+			if (value < MIN_RADIUS) value = MIN_RADIUS;
+			var ratio = value / _Radius;
 			_Radius = value;
-			var c = Node?.GetComponent<CircleCollider2D>();
-			if (c != null) c.radius = value;
+
+			if (!Node) return;
+			Node.transform.localScale *= ratio;
+			//var c = Node?.GetComponent<CircleCollider2D>();
+			//if (c != null) c.radius = value;
 		}
 	}
 
@@ -88,5 +115,7 @@ public class Core : Orb<Core>
 		Radius = _Radius;
 		LayerMask = _LayerMask;
 		Fixed = _Fixed;
+		MainColor = _mainColor;
 	}
+	
 }

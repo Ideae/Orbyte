@@ -24,6 +24,7 @@ public class Node : BaseBehaviour
 	
 	public MeshRenderer MR { get; private set; }
 
+
 	public IAimedActionOrb AimedActionOrb
 	{
 		get { return _aimedActionOrb; }
@@ -264,4 +265,12 @@ public class Node : BaseBehaviour
 	}
 
 	public void LookAt(Vector2 v, bool immediately = false) => LookTowards(v - Position, immediately);
+
+
+	[AttributeUsage(AttributeTargets.Method)]
+	public class ApplyPropsAttribute : DrawnAttribute { }
+	[ApplyPropsAttribute] public void ApplyProps()
+	{
+		//Called by vexe
+	}
 }

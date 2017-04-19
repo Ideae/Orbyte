@@ -62,6 +62,7 @@ public abstract class Orb<T> : Orb where T : Orb<T>
 
 	public static T GetDefault()
 	{
+		if (DefaultOrbs == null) DefaultOrbs = Resources.LoadAll("DefaultOrbs").Cast<Orb>().ToList(); ;
 		foreach (Orb o in DefaultOrbs)
 		{
 			if (o.GetType() == typeof(T))
@@ -75,9 +76,9 @@ public abstract class Orb<T> : Orb where T : Orb<T>
 	void Awake()
 	{
 		//sets all CustomProperties that need to have their setters called
-		foreach (var tuple in customProperties)
-			tuple.Item1.SetValue(this, tuple.Item2.GetValue(this));
-
+		//foreach (var tuple in customProperties)
+		//	tuple.Item1.SetValue(this, tuple.Item2.GetValue(this));
+		
 		OnCreate();
 	}
 
@@ -128,11 +129,6 @@ public abstract class Orb : BaseScriptableObject, IOrbType
 	public virtual void OnActivate() {}
 	public virtual void OnDeactivate() {}
 	public virtual void OnDetach() {}
-
-	public static void Initialize()
-	{
-		DefaultOrbs = Resources.LoadAll("Defaults").Cast<Orb>().ToList();
-	}
 }
 
 

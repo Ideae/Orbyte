@@ -1,8 +1,14 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEditor;
+using Vexe.Editor;
+using Vexe.Editor.Drawers;
+using Vexe.Runtime.Types;
+using Object = UnityEngine.Object;
+
 public static class EditorUtils {
 	[MenuItem("Generate/Code")]
 	public static void GenerateCode()
@@ -19,9 +25,90 @@ public static class EditorUtils {
 			if (defaultOrbs.Any(o => o.GetType() == t)) continue;
 			var ass = ScriptableObject.CreateInstance(t);
 
-			var nodeDefaultPath = $"Assets/Resources/DefaultOrbs/Default{t.Name}.asset";
+			var orbDefaultPath = $"Assets/Resources/DefaultOrbs/Default{t.Name}.asset";
 
-			AssetDatabase.CreateAsset(ass, nodeDefaultPath);
+			AssetDatabase.CreateAsset(ass, orbDefaultPath);
 		}
 	}
+	// Attaches core so that edits to the core's props take effect at designtime
+	[MenuItem("CONTEXT/Node/Attach Core")]
+	static void AttachCorePrefab(MenuCommand command)
+	{
+		bool confirm = EditorUtility.DisplayDialog("Editing prefab",
+			"Heads up, you're editing a shared core from many objects, Are you sure you want to do this?",
+			"Yah Man");
+		if(!confirm) return;
+		
+		Node n = (Node)command.context;
+		var orb = n.orbs.FirstOrDefault(o=> o is Core && o.IsActive);
+		if (orb == null)
+		{
+			Debug.LogError("Eh? There's no active core on this node!");
+			return;
+		} 
+		else orb._node = n;
+	}
+
+	[MenuItem("CONTEXT/Node/Attach Core Copy")]
+	static void AttachCoreCopy(MenuCommand command)
+	{
+		Node n = (Node)command.context;
+
+		Core orb = null;
+		for (int i = 0; i < n.orbs.Count; i++)
+		{
+			var o = n.orbs[i];
+			if (o is Core && o.IsActive)
+			{
+				orb = (Core)o.Clone();
+				n.orbs[i] = orb;
+				break;
+			}
+		}
+		if (orb == null)
+		{
+			Debug.LogError("Eh? There's no active core on this node!");
+			return;
+		}
+		
+
+		var orbPath = $"Assets/Resources/Generated/{n.name}_{orb.GetType().Name}.asset";
+
+		AssetDatabase.CreateAsset(orb, orbPath);
+		orb._node = n;
+	}
+
+	[MenuItem("CONTEXT/Node/Create Material Instance")]
+	static void CreateMaterialInstance(MenuCommand command)
+	{
+		Node n = (Node)command.context;
+		var origMat = n.GetComponent<MeshRenderer>().sharedMaterial;
+		var mat = Object.Instantiate(origMat);
+		n.GetComponent<MeshRenderer>().sharedMaterial = mat;
+		var materialPath = $"Assets/Materials/Generated/{n.name}_{origMat.name}.mat";
+		AssetDatabase.CreateAsset(mat, materialPath);
+
+	}
+
+	[MenuItem("CONTEXT/Node/Serialize All Orbs")]
+	static void SerializeAllOrbs(MenuCommand command)
+	{
+		Node n = (Node)command.context;
+		var savedNodesPath = "Assets/SavedNodes";
+		AssetDatabase.CreateFolder(savedNodesPath, n.name);
+		var nodepath = savedNodesPath + "/"+n.name;
+		AssetDatabase.CreateFolder(nodepath, "Orbs");
+		var orbsPath = nodepath + "/Orbs";
+		for (int i = 0; i < n.orbs.Count; i++)
+		{
+			n.orbs[i] = n.orbs[i].Clone();
+
+			AssetDatabase.CreateAsset(n.orbs[i], orbsPath +$"/{n.name}_{n.orbs[i].GetType().Name}.asset");
+
+		}
+		PrefabUtility.CreatePrefab(nodepath+"/"+n.name + ".prefab", n.gameObject);
+
+
+	}
+
 }

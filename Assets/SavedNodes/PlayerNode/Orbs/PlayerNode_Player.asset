@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d032f72e3c086574f80feb213162ad05, type: 3}
+  m_Name: PlayerNode_Player
+  m_EditorClassIdentifier: 
+  _id: -2176
+  dbg: 0
+  Prefs:
+    _Buckets: ffffffff0200000000000000ffffffff010000000300000004000000
+    _HashCodes: 8993f12902ea725b2c94d95db614c546c781e86c0000000000000000
+    _Next: ffffffffffffffffffffffffffffffffffffffff0000000000000000
+    _Count: 5
+    _Version: 330
+    _FreeList: -1
+    _FreeCount: 0
+    _Keys: 8993f1a902ea72db2c94d95db614c546c781e86c0000000000000000
+    _Values:
+    - ValueString: 
+      ValueFloat: 8
+      Type: 0
+    - ValueString: 
+      ValueFloat: 0
+      Type: 0
+    - ValueString: 
+      ValueFloat: 0
+      Type: 2
+    - ValueString: 
+      ValueFloat: 0
+      Type: 2
+    - ValueString: 
+      ValueFloat: 0
+      Type: 2
+    - ValueString: 
+      ValueFloat: 0
+      Type: 0
+    - ValueString: 
+      ValueFloat: 0
+      Type: 0
+  _isActive: 1

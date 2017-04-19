@@ -15,7 +15,6 @@ public class UIManager : Singleton<UIManager>
 
 	void Awake()
 	{
-		Orb.Initialize();
 	}
 
 	public void SelectNode(Node n)

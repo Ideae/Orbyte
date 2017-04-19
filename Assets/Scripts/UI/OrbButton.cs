@@ -2,7 +2,7 @@
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class OrbButton : MonoBehaviour
+public class OrbButton : MonoBehaviour, IPointerClickHandler
 {
 	public Orb orb;
 
@@ -21,16 +21,17 @@ public class OrbButton : MonoBehaviour
 
 	public void OnClick()
 	{
-		if (!orb.IsActive) orb.IsActive = true;
-		else (orb as IActionOrb)?.OnActionDown();
+		orb.OnClick();
 	}
 	public void OnPointerClick(PointerEventData eventData)
 	{
-		if (eventData.button == PointerEventData.InputButton.Left)
-			Debug.Log("Left click");
-		else if (eventData.button == PointerEventData.InputButton.Middle)
-			Debug.Log("Middle click");
-		else if (eventData.button == PointerEventData.InputButton.Right)
-			Debug.Log("Right click");
+		//Debug.Log("what6");
+		if (eventData.button == PointerEventData.InputButton.Right)
+		{
+			UIManager.Instance.inspectorPanel.SetActive(true);
+			
+			var inspector = FindObjectOfType<OrbInspector>();
+			inspector.SetOrb(orb);
+		}
 	}
 }

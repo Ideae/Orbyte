@@ -15,7 +15,7 @@ public class OrbInspector : MonoBehaviour
 	Orb orb;
 	// Use this for initialization
 	void Start () {
-		SetOrb(UIManager.Instance.Player.Node.core);
+		//SetOrb(UIManager.Instance.Player.Node.core);
 	}
 	
 	// Update is called once per frame
@@ -29,6 +29,7 @@ public class OrbInspector : MonoBehaviour
 		this.orb = orb;
 		if (sameType) return;
 		propertiesPanel.transform.DestroyChildren();
+		orbText.text = this.orb.GetType().Name;
 		foreach (FPInfo fp in this.orb.InspectableVariables)
 		{
 			Type t = fp.Type;
@@ -37,19 +38,19 @@ public class OrbInspector : MonoBehaviour
 			{
 				elem = (GameObject)Instantiate(inputPrefab, propertiesPanel.transform);
 				InputField inputField = elem.transform.GetComponentInChildren<InputField>();
-				inputField.text = fp.GetValue(orb).ToString();
+				inputField.text = fp.GetValue(this.orb).ToString();
 				inputField.onEndEdit.AddListener((s) =>
 				{
 					if (t == typeof(string))
 					{
-						fp.SetValue(orb, s);
+						fp.SetValue(this.orb, s);
 					}
 					else if (t == typeof(float))
 					{
 						float f = 0f;
 						if (float.TryParse(s, out f))
 						{
-							fp.SetValue(orb, f);
+							fp.SetValue(this.orb, f);
 						}
 					}
 					else if (t == typeof(int))
@@ -57,7 +58,7 @@ public class OrbInspector : MonoBehaviour
 						int i = 0;
 						if (int.TryParse(s, out i))
 						{
-							fp.SetValue(orb, i);
+							fp.SetValue(this.orb, i);
 						}
 					}
 				});
@@ -66,9 +67,11 @@ public class OrbInspector : MonoBehaviour
 			{
 				elem = (GameObject)Instantiate(boolPrefab, propertiesPanel.transform);
 				Toggle toggle = elem.transform.GetComponentInChildren<Toggle>();
+				toggle.isOn = (bool)fp.GetValue(this.orb);
+				
 				toggle.onValueChanged.AddListener((b) =>
 				{
-					fp.SetValue(orb, b);
+					fp.SetValue(this.orb, b);
 				});
 
 			}
@@ -82,5 +85,12 @@ public class OrbInspector : MonoBehaviour
 		}
 
 
+	}
+
+	public void CloseInspector()
+	{
+		this.orb = null;
+		propertiesPanel.transform.DestroyChildren();
+		gameObject.SetActive(false);
 	}
 }

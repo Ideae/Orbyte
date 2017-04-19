@@ -61,8 +61,8 @@ public abstract class Orb<T> : Orb where T : Orb<T>
 	void Awake()
 	{
 		//sets all CustomProperties that need to have their setters called
-		foreach (var cp in customProperties)
-			cp.property.SetValue(this, cp.field.GetValue(this));
+		//foreach (var cp in customProperties)
+		//	cp.property.SetValue(this, cp.field.GetValue(this));
 
 		OnCreate();
 	}
@@ -141,5 +141,23 @@ public abstract class Orb : BaseScriptableObject, IOrbType
 	public virtual void OnActivate() {}
 	public virtual void OnDeactivate() {}
 	public virtual void OnDetach() {}
+
+	public virtual void OnEquip()
+	{
+		IsActive = true;
+	}
+	public virtual void OnUnequip()
+	{
+		IsActive = false;
+	}
+
+	public virtual void OnClick()
+	{
+		if (this is IEquippable)
+		{
+			IEquippable ie = (IEquippable)this;
+			ie.SetEquipped();
+		}
+	}
 }
 

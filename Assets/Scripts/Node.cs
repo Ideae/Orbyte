@@ -8,11 +8,7 @@ using Vexe.Runtime.Types;
 public class Node : BaseBehaviour
 {
 	readonly Dictionary<Type, IList> _activeOrbsbyType = new Dictionary<Type, IList>();
-	IActionOrb _actionOrb;
-
-	IAimedActionOrb _aimedActionOrb;
 	bool _isPositionTarget;
-	IMovementOrb _movementOrb;
 	Vector2 _movementTarget;
 
 	public Core core;
@@ -24,38 +20,9 @@ public class Node : BaseBehaviour
 	
 	public MeshRenderer MR { get; private set; }
 
-	public IAimedActionOrb AimedActionOrb
-	{
-		get { return _aimedActionOrb; }
-		set
-		{
-			if (_aimedActionOrb != null) _aimedActionOrb.IsActive = false;
-			if (value != null) value.IsActive = true;
-			_aimedActionOrb = value;
-		}
-	}
-
-	public IActionOrb ActionOrb
-	{
-		get { return _actionOrb; }
-		set
-		{
-			if (_actionOrb != null) _actionOrb.IsActive = false;
-			if (value != null) value.IsActive = true;
-			_actionOrb = value;
-		}
-	}
-
-	public IMovementOrb MovementOrb
-	{
-		get { return _movementOrb; }
-		set
-		{
-			if (_movementOrb != null) _movementOrb.IsActive = false;
-			if (value != null) value.IsActive = true;
-			_movementOrb = value;
-		}
-	}
+	public IAimedActionOrb aimedActionOrb;
+	public IActionOrb actionOrb;
+	public IMovementOrb movementOrb;
 
 	public Vector2 Position
 	{
@@ -184,7 +151,7 @@ public class Node : BaseBehaviour
 				o.FixedAffectOther(other);
 			}
 		}
-		MovementOrb?.ProcessMovement();
+		movementOrb?.ProcessMovement();
 	}
 
 	public void DeleteNode()
@@ -195,17 +162,17 @@ public class Node : BaseBehaviour
 
 	public void AimedActionDown(Vector2 worldPos)
 	{
-		AimedActionOrb?.OnAimedActionDown(worldPos);
+		aimedActionOrb?.OnAimedActionDown(worldPos);
 	}
 
 	public void AimedActionHeld(Vector2 worldPos)
 	{
-		AimedActionOrb.OnAimedActionDown(worldPos);
+		aimedActionOrb.OnAimedActionDown(worldPos);
 	}
 
 	public void AimedActionUp(Vector2 worldPos)
 	{
-		AimedActionOrb.OnAimedActionDown(worldPos); 
+		aimedActionOrb.OnAimedActionDown(worldPos); 
 	}
 
 	public void DeleteAllOrbs(bool skipCore = false)
@@ -231,9 +198,9 @@ public class Node : BaseBehaviour
 
 			list.Add(orb);
 		}
-		if (orb is IMovementOrb) MovementOrb = (IMovementOrb)orb;
-		if (orb is IActionOrb) ActionOrb = (IActionOrb)orb;
-		if (orb is IAimedActionOrb) AimedActionOrb = (IAimedActionOrb)orb;
+		if (orb is IMovementOrb) movementOrb = (IMovementOrb)orb;
+		if (orb is IActionOrb) actionOrb = (IActionOrb)orb;
+		if (orb is IAimedActionOrb) aimedActionOrb = (IAimedActionOrb)orb;
 		if (orb is Core) core = (Core)orb;
 	}
 
@@ -241,9 +208,9 @@ public class Node : BaseBehaviour
 	{
 		foreach (var orbType in orb.Interfaces)
 			_activeOrbsbyType[orbType].Remove(orb);
-		if (ReferenceEquals(orb, MovementOrb)) MovementOrb = null;
-		if (ReferenceEquals(orb, ActionOrb)) ActionOrb = null;
-		if (ReferenceEquals(orb, AimedActionOrb)) AimedActionOrb = null;
+		if (ReferenceEquals(orb, movementOrb)) movementOrb = null;
+		if (ReferenceEquals(orb, actionOrb)) actionOrb = null;
+		if (ReferenceEquals(orb, aimedActionOrb)) aimedActionOrb = null;
 		
 	}
 

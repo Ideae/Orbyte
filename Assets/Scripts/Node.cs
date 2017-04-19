@@ -1,264 +1,260 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Vexe.Runtime.Types;
 
 public class Node : BaseBehaviour
 {
-  public Room room;
-    [PerItem, Inline, SerializeField] public List<Orb> orbs = new List<Orb>();
-    public Rigidbody2D rb => GetComponent<Rigidbody2D>();
-  public MeshRenderer mr => GetComponent<MeshRenderer>();
-  
-  public event Action<Node> OnOrbsChanged;
+	readonly Dictionary<Type, IList> _activeOrbsbyType = new Dictionary<Type, IList>();
+	IActionOrb _actionOrb;
 
-    IAimedActionOrb _aimedActionOrb;
-    public IAimedActionOrb AimedActionOrb
-    {
-        get { return _aimedActionOrb; }
-        set
-        {
-          
-            if (_aimedActionOrb != null) _aimedActionOrb.IsActive = false;
-            if (value != null) value.IsActive = true;
-            _aimedActionOrb = value;
-        }
-    }
-    IActionOrb _actionOrb;
-    public IActionOrb ActionOrb
-    {
-        get { return _actionOrb; }
-        set
-        {
-            if(_actionOrb != null) _actionOrb.IsActive = false;
-            if (value != null) value.IsActive = true;
-            _actionOrb = value;
-        }
-    }
-    IMovementOrb _movementOrb;
-    public IMovementOrb MovementOrb
-    {
-        get { return _movementOrb; }
-        set
-        {
-            if (_movementOrb != null) _movementOrb.IsActive = false;
-            if (value != null) value.IsActive = true;
-            _movementOrb = value;
-        }
-    }
-    
-  public Core core;
+	IAimedActionOrb _aimedActionOrb;
+	bool _isPositionTarget;
+	IMovementOrb _movementOrb;
+	Vector2 _movementTarget;
 
-  public void Awake()
-  {
-    for (var i = 0; i < orbs.Count; i++)
-    {
-      Orb o = orbs[i];
-      orbs.RemoveAt(i);
-      AddOrb(o.Clone(), i);
-    }
+	public Core core;
+	[PerItem] [Inline] [SerializeField] public List<Orb> orbs = new List<Orb>();
+	public Room room;
 
-    if (core == null)
-      {
-          core = Core.CreateOrb();
-          this.AddOrb(core);
-      }
-  }
-    public T GetOrb<T>() where T:class
-    {
-        foreach (var orb in orbs)
-        {
-            if (orb is T) return orb as T;
-        }
-        return null;
-    }
+	public float rotationTarget;
+	public Rigidbody2D RB => GetComponent<Rigidbody2D>();
+	public MeshRenderer MR => GetComponent<MeshRenderer>();
 
-    List<T> GetActiveOrbs<T>() where T : IOrbType
-    {
-        if (activeOrbsbyType.ContainsKey(typeof(T))) return (List<T>)activeOrbsbyType[typeof(T)];
-        var ret = new List<T>();
-        activeOrbsbyType[typeof(T)] = ret;
-        return ret;
-    }
-    
-  
-    public void AddOrb(Orb orb, int? index = null)
-  {
+	public IAimedActionOrb AimedActionOrb
+	{
+		get { return _aimedActionOrb; }
+		set
+		{
+			if (_aimedActionOrb != null) _aimedActionOrb.IsActive = false;
+			if (value != null) value.IsActive = true;
+			_aimedActionOrb = value;
+		}
+	}
 
-      orb.Node?.RemoveOrb(orb);
-    if (index.HasValue) orbs.Insert(index.Value, orb);
-    else orbs.Add(orb);
+	public IActionOrb ActionOrb
+	{
+		get { return _actionOrb; }
+		set
+		{
+			if (_actionOrb != null) _actionOrb.IsActive = false;
+			if (value != null) value.IsActive = true;
+			_actionOrb = value;
+		}
+	}
 
-    orb._node = this;
-      orb.OnAttach();
+	public IMovementOrb MovementOrb
+	{
+		get { return _movementOrb; }
+		set
+		{
+			if (_movementOrb != null) _movementOrb.IsActive = false;
+			if (value != null) value.IsActive = true;
+			_movementOrb = value;
+		}
+	}
 
-    if (orb.IsActive)
-    {
-      orb.OnActivate();
-      OnActivateOrb(orb);
-    }
+	public Vector2 Position
+	{
+		get { return transform.position; }
+		set { transform.position = value; }
+	}
 
-    OnOrbsChanged?.Invoke(this);
-  }
+	public Vector2 MovementDirectionTarget
+	{
+		get { return _isPositionTarget ? _movementTarget - Position : _movementTarget; }
+		set
+		{
+			_isPositionTarget = false;
+			_movementTarget = value;
+		}
+	}
 
 
+	public Vector2? MovementPositionTarget
+	{
+		get { return _isPositionTarget ? (Vector2?)_movementTarget : null; }
+		set
+		{
+			_isPositionTarget = value.HasValue;
+			_movementTarget = value ?? Vector2.zero;
+		}
+	}
 
-  public void RemoveOrb(Orb orb)
-  {
+	public event Action<Node> OnOrbsChanged;
 
-    if (orb.IsActive)
-    {
-      orb.OnDeactivate();
-      orb.Node.OnDeactivateOrb(orb);
-    }
-    orb.OnDetach();
-    orb._node = null;
+	public void Awake()
+	{
+		for (var i = 0; i < orbs.Count; i++)
+		{
+			var o = orbs[i];
+			orbs.RemoveAt(i);
+			AddOrb(o.Clone(), i);
+		}
 
+		if (core == null)
+		{
+			core = Core.CreateOrb();
+			AddOrb(core);
+		}
+	}
 
-    orbs.Remove(orb);
+	public T GetOrb<T>() where T : class
+	{
+		foreach (var orb in orbs)
+			if (orb is T) return orb as T;
+		return null;
+	}
 
-    OnOrbsChanged?.Invoke(this);
-
-  }
-
-  public void Update()
-  {
-      foreach (var orb in GetActiveOrbs<IAffectSelfOrb>()) orb.AffectSelf();
-      foreach(IDrawOrb o in GetActiveOrbs<IDrawOrb>()) o.Draw();
-      foreach (var o in GetActiveOrbs<IAffectOtherOrb>())
-      {
-        
-          foreach (var other in room.nodes)
-          {
-                //This if condition might justify turning room.nodes into a hashset :(
-              if(other == this) continue;
-              o.AffectOther(other);
-          }
-      }
-    }
-
-    public void FixedUpdate()
-    {
-        foreach (var orb in GetActiveOrbs<IFixedAffectSelf>()) orb.FixedAffectSelf();
-
-        foreach (var o in GetActiveOrbs<IFixedAffectOther>())
-        {
-            foreach (var other in room.nodes)
-            {
-                //This if condition might justify turning room.nodes into a hashset :(
-                if (other == this) continue;
-                o.FixedAffectOther(other);
-            }
-        }
-        MovementOrb?.ProcessMovement();
-    }
-    public void DeleteNode()
-  {
-        DeleteAllOrbs();
-        Destroy(gameObject);
-  }
-
-    public void AimedActionDown(Vector2 worldPos)
-    {
-        AimedActionOrb?.OnAimedActionDown(worldPos);
-    }
-    public void AimedActionHeld(Vector2 worldPos)
-    {
-        AimedActionOrb.OnAimedActionDown(worldPos);
-    }
-    public void AimedActionUp(Vector2 worldPos)
-    {
-        AimedActionOrb.OnAimedActionDown(worldPos);
-    }
-
-    public void DeleteAllOrbs(bool skipCore = false)
-    {
-        foreach (var o in orbs)
-        {
-            if(skipCore && ReferenceEquals(o, core)) continue;
-            RemoveOrb(o);
-            o.OnDelete();
-        }
-        orbs.Clear();
-    }
-
-    public Vector2 position { get { return transform.position; } set { transform.position = value; } }
-    Vector2 _movementTarget;
-    bool _isPositionTarget;
-
-    public float rotationTarget;
-    readonly Dictionary<Type, IList> activeOrbsbyType = new Dictionary<Type, IList>();
-
-    public Vector2 movementDirectionTarget
-    {
-        get { return _isPositionTarget ? _movementTarget - position : _movementTarget; }
-        set
-        {
-            _isPositionTarget = false;
-            _movementTarget = value;
-
-        }
-    }
+	List<T> GetActiveOrbs<T>() where T : IOrbType
+	{
+		if (_activeOrbsbyType.ContainsKey(typeof(T))) return (List<T>)_activeOrbsbyType[typeof(T)];
+		var ret = new List<T>();
+		_activeOrbsbyType[typeof(T)] = ret;
+		return ret;
+	}
 
 
-    public Vector2? movementPositionTarget
-    {
-        get { return _isPositionTarget ? (Vector2?) _movementTarget : null; }
-        set
-        {
-            _isPositionTarget = value.HasValue;
-            _movementTarget = value??Vector2.zero;
-        }
-    }
+	public void AddOrb(Orb orb, int? index = null)
+	{
+		orb.Node?.RemoveOrb(orb);
+		if (index.HasValue) orbs.Insert(index.Value, orb);
+		else orbs.Add(orb);
+
+		orb._node = this;
+		orb.OnAttach();
+
+		if (orb.IsActive)
+		{
+			orb.OnActivate();
+			OnActivateOrb(orb);
+		}
+
+		OnOrbsChanged?.Invoke(this);
+	}
 
 
-    public void OnActivateOrb(Orb orb)
-    {
-        foreach (var orbType in orb.Interfaces)
-        {
-            var list = activeOrbsbyType.ContainsKey(orbType)
-                ? activeOrbsbyType[orbType]
-                : activeOrbsbyType[orbType] = OrbLists.Create(orbType);
+	public void RemoveOrb(Orb orb)
+	{
+		if (orb.IsActive)
+		{
+			orb.OnDeactivate();
+			orb.Node.OnDeactivateOrb(orb);
+		}
+		orb.OnDetach();
+		orb._node = null;
 
 
-            list.Add(orb);
-        }
-        if (orb is IMovementOrb) MovementOrb = (IMovementOrb)orb;
-        if (orb is IActionOrb) ActionOrb = (IActionOrb)orb;
-        if (orb is IAimedActionOrb) AimedActionOrb = (IAimedActionOrb)orb;
-    }
+		orbs.Remove(orb);
 
-    public void OnDeactivateOrb(Orb orb)
-    {
+		OnOrbsChanged?.Invoke(this);
+	}
 
-        foreach (var orbType in orb.Interfaces)
-        {
-            activeOrbsbyType[orbType].Remove(orb);
-        }
-        if (ReferenceEquals(orb, MovementOrb)) MovementOrb = null;
-        if (ReferenceEquals(orb, ActionOrb)) ActionOrb = null; 
-        if (ReferenceEquals(orb, AimedActionOrb)) AimedActionOrb = null;
-    }
+	public void Update()
+	{
+		foreach (var orb in GetActiveOrbs<IAffectSelfOrb>()) orb.AffectSelf();
+		foreach (var o in GetActiveOrbs<IDrawOrb>()) o.Draw();
+		foreach (var o in GetActiveOrbs<IAffectOtherOrb>())
+		{
+			foreach (var other in room.nodes)
+			{
+				//This if condition might justify turning room.nodes into a hashset :(
+				if (other == this) continue;
+				o.AffectOther(other);
+			}
+		}
+	}
 
-    public void AddOrbs(List<Orb> list, bool clone = false)
-    {
-        
-        foreach (var o in list)
-        {
-            var oo = clone ? o.Clone():o;
-            AddOrb(oo);
-        }
-    }
+	public void FixedUpdate()
+	{
+		foreach (var orb in GetActiveOrbs<IFixedAffectSelf>()) orb.FixedAffectSelf();
 
-    public void LookTowards(Vector2 v, bool immediately = false)
-    {
-        v.Normalize();
-        rotationTarget = Mathf.Atan2(v.y, v.x);
-        if (immediately) rb.rotation = rotationTarget;
-    }
+		foreach (var o in GetActiveOrbs<IFixedAffectOther>())
+		{
+			foreach (var other in room.nodes)
+			{
+				//This if condition might justify turning room.nodes into a hashset :(
+				if (other == this) continue;
+				o.FixedAffectOther(other);
+			}
+		}
+		MovementOrb?.ProcessMovement();
+	}
 
-    public void LookAt(Vector2 v, bool immediately = false) => LookTowards(v - position, immediately);
+	public void DeleteNode()
+	{
+		DeleteAllOrbs();
+		Destroy(gameObject);
+	}
+
+	public void AimedActionDown(Vector2 worldPos)
+	{
+		AimedActionOrb?.OnAimedActionDown(worldPos);
+	}
+
+	public void AimedActionHeld(Vector2 worldPos)
+	{
+		AimedActionOrb.OnAimedActionDown(worldPos);
+	}
+
+	public void AimedActionUp(Vector2 worldPos)
+	{
+		AimedActionOrb.OnAimedActionDown(worldPos);
+	}
+
+	public void DeleteAllOrbs(bool skipCore = false)
+	{
+		foreach (var o in orbs)
+		{
+			if (skipCore && ReferenceEquals(o, core)) continue;
+			RemoveOrb(o);
+			o.OnDelete();
+		}
+		orbs.Clear();
+	}
+
+
+	public void OnActivateOrb(Orb orb)
+	{
+		foreach (var orbType in orb.Interfaces)
+		{
+			var list = _activeOrbsbyType.ContainsKey(orbType)
+				? _activeOrbsbyType[orbType]
+				: _activeOrbsbyType[orbType] = OrbLists.Create(orbType);
+
+
+			list.Add(orb);
+		}
+		if (orb is IMovementOrb) MovementOrb = (IMovementOrb)orb;
+		if (orb is IActionOrb) ActionOrb = (IActionOrb)orb;
+		if (orb is IAimedActionOrb) AimedActionOrb = (IAimedActionOrb)orb;
+	}
+
+	public void OnDeactivateOrb(Orb orb)
+	{
+		foreach (var orbType in orb.Interfaces)
+			_activeOrbsbyType[orbType].Remove(orb);
+		if (ReferenceEquals(orb, MovementOrb)) MovementOrb = null;
+		if (ReferenceEquals(orb, ActionOrb)) ActionOrb = null;
+		if (ReferenceEquals(orb, AimedActionOrb)) AimedActionOrb = null;
+	}
+
+	public void AddOrbs(List<Orb> list, bool clone = false)
+	{
+		foreach (var o in list)
+		{
+			var oo = clone ? o.Clone() : o;
+			AddOrb(oo);
+		}
+	}
+
+	public void LookTowards(Vector2 v, bool immediately = false)
+	{
+		v.Normalize();
+		rotationTarget = Mathf.Atan2(v.y, v.x);
+		if (immediately) RB.rotation = rotationTarget;
+	}
+
+	public void LookAt(Vector2 v, bool immediately = false) => LookTowards(v - Position, immediately);
 }
-

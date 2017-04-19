@@ -1,58 +1,54 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class Room : MonoBehaviour {
-  public Node NodePrefab;
-  public GameObject SceneNodes;
-  public List<Node> nodes = new List<Node>();
-	// Use this for initialization
-	void Start ()
-	{
-	    UIManager.Instance.RegisterRoom(this);
-    var ns = FindObjectsOfType<Node>();
-    foreach(Node n in ns)
-    {
-      n.room = this;
-      if (!nodes.Contains(n))
-      {
-        nodes.Add(n);
+public class Room : MonoBehaviour
+{
+	public Node NodePrefab;
+	public List<Node> nodes = new List<Node>();
 
-      }
-    }
+	public GameObject SceneNodes;
+
+	// Use this for initialization
+	void Start()
+	{
+		UIManager.Instance.RegisterRoom(this);
+		var ns = FindObjectsOfType<Node>();
+		foreach (var n in ns)
+		{
+			n.room = this;
+			if (!nodes.Contains(n))
+				nodes.Add(n);
+		}
 	}
 
-  // Update is called once per frame
-  void Update()
-  {
-    if (Input.GetKeyDown(KeyCode.Delete))
-    {
-      DeleteAllNodes();
-    }
-  }
+	// Update is called once per frame
+	void Update()
+	{
+		if (Input.GetKeyDown(KeyCode.Delete))
+			DeleteAllNodes();
+	}
 
-  public Node SpawnNode(Vector2 pos, List<Orb> orbs = null, bool cloneOrbs = false)
-  {
-    Node node = Instantiate(NodePrefab, SceneNodes.transform);
+	public Node SpawnNode(Vector2 pos, List<Orb> orbs = null, bool cloneOrbs = false)
+	{
+		var node = Instantiate(NodePrefab, SceneNodes.transform);
 
-    node.room = this;
-    node.transform.position = new Vector3(pos.x, pos.y, gameObject.transform.position.z);
-    if (orbs != null)
-    {
-      node.AddOrbs(orbs, cloneOrbs);
-      
-    }
-    nodes.Add(node);
-    return node;
-  }
-  void DeleteAllNodes()
-  {
-    for(int i = 0; i < nodes.Count; i++)
-    {
-      var n = nodes[i];
-      if (n.GetOrb<Player>() != null) continue;
-      n.DeleteNode();
-      nodes.RemoveAt(i);
-      i--;
-    }
-  }
+		node.room = this;
+		node.transform.position = new Vector3(pos.x, pos.y, gameObject.transform.position.z);
+		if (orbs != null)
+			node.AddOrbs(orbs, cloneOrbs);
+		nodes.Add(node);
+		return node;
+	}
+
+	void DeleteAllNodes()
+	{
+		for (var i = 0; i < nodes.Count; i++)
+		{
+			var n = nodes[i];
+			if (n.GetOrb<Player>() != null) continue;
+			n.DeleteNode();
+			nodes.RemoveAt(i);
+			i--;
+		}
+	}
 }

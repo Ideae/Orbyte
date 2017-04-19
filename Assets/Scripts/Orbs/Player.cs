@@ -3,7 +3,7 @@
 [CreateAssetMenu(menuName = "Orbs/" + nameof(Player))]
 public class Player : Orb<Player>, IAimedActionOrb, IAffectSelfOrb {
 
-    protected override void OnAttach()
+  public override void OnAttach()
     {
     UIManager.Instance.RegisterPlayer(this);
     }

@@ -11,6 +11,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c211714366977804fb6953e944f4eead, type: 3}
   m_Name: DefaultGravity
   m_EditorClassIdentifier: 
+  _id: -2172
+  dbg: 0
+  Prefs:
+    _Buckets: 000000000300000004000000ffffffff060000000500000002000000
+    _HashCodes: 0594f1297eea725ba894d95d32e6c6464353ea6c0b3856430a385643
+    _Next: ffffffffffffffffffffffffffffffff01000000ffffffffffffffff
+    _Count: 7
+    _Version: 795
+    _FreeList: -1
+    _FreeCount: 0
+    _Keys: 0594f1a97eea72dba894d95d32e6c6464353ea6c0b3856430a385643
+    _Values:
+    - ValueString: 
+      ValueFloat: 8
+      Type: 0
+    - ValueString: 
+      ValueFloat: 0
+      Type: 0
+    - ValueString: 
+      ValueFloat: 0
+      Type: 2
+    - ValueString: 
+      ValueFloat: 0
+      Type: 2
+    - ValueString: 
+      ValueFloat: 0
+      Type: 2
+    - ValueString: 
+      ValueFloat: 14
+      Type: 1
+    - ValueString: 
+      ValueFloat: 53
+      Type: 1
   _isActive: 1
-  multiplier: 10
+  multiplier: 1
   deadzone: 0.1

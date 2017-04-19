@@ -30,13 +30,15 @@ public class Room : MonoBehaviour {
     }
   }
 
-  public Node SpawnNode(Vector2 pos, List<Orb> orbs = null)
+  public Node SpawnNode(Vector2 pos, List<Orb> orbs = null, bool cloneOrbs = false)
   {
     Node node = Instantiate(NodePrefab, SceneNodes.transform);
+
+    node.room = this;
     node.transform.position = new Vector3(pos.x, pos.y, gameObject.transform.position.z);
     if (orbs != null)
     {
-      node.AddOrbs(orbs);
+      node.AddOrbs(orbs, cloneOrbs);
       
     }
     nodes.Add(node);

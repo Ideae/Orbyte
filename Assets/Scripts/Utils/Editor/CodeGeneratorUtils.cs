@@ -19,44 +19,15 @@ namespace CodeGeneration
     {
         static string[] tags => UnityEditorInternal.InternalEditorUtility.tags;
         static string[] layers => UnityEditorInternal.InternalEditorUtility.layers;
-
-        public static bool AutoGenerate
-        {
-            get { return _autoGenerate; }
-            set
-            {
-                //Debug.Log($"{value}, from {_autoGenerate}");
-                if(value == _autoGenerate) return;
-                _autoGenerate = value;
-                Menu.SetChecked(menuName + "/" + nameof(AutoGenerateCode), value);
-                EditorPrefs.SetBool("AutoUpdate", value);
-            }
-        }
+    
 
         const string menuName = "Code Generation";
-        static bool _autoGenerate = false;
-
-
-
         [MenuItem(menuName + "/"+nameof(GenerateCode))]
         public static void GenerateCode()
         {
             Generate(); 
         }
-
-        [DidReloadScripts]
-        static void Apply()
-        {
-            if (AutoGenerate) Generate();
-        }
-
-        [MenuItem(menuName + "/" + nameof(AutoGenerateCode))]
-        public static void AutoGenerateCode()
-        {
-                AutoGenerate = !AutoGenerate;
-        }
-
-
+    
         static void Generate()
         {
 
@@ -76,7 +47,18 @@ namespace CodeGeneration
             {
                 Debug.Log("An error occurred while saving file: " + e);
             }
-        }
+            var defaultOrbs = Resources.LoadAll("Defaults");
+          var types = Orb.AllOrbTypes;
+          foreach (var t in types.Where(t => !t.IsAbstract))
+                {
+                  if (defaultOrbs.Any(o => o.GetType() == t)) continue;
+                  var ass = ScriptableObject.CreateInstance(t);
+
+                  var nodeDefaultPath = ($"Assets/OrbPrefabs/Resources/Defaults/Default{t.Name}.asset");
+
+                  AssetDatabase.CreateAsset(ass, nodeDefaultPath);
+                }
+    }
         
         // necessary for XLinq to save the xml project file in utf8  
         class Utf8StringWriter : StringWriter
@@ -86,37 +68,10 @@ namespace CodeGeneration
 
         static CodeGenerator()
         {
-            var types = Orb.AllOrbTypes;
-            EditorApplication.playmodeStateChanged += () =>
-            {
-                Menu.SetChecked(menuName + "/" + nameof(AutoGenerateCode), AutoGenerate);
-
-            };
-            EditorApplication.delayCall += () =>
-            {
-
-                AutoGenerate = EditorPrefs.GetBool("AutoUpdate", true);
-                Menu.SetChecked(menuName + "/" + nameof(AutoGenerateCode), AutoGenerate);
-
-            };
-            EditorApplication.update += () =>
-            {
-
-                Menu.SetChecked(menuName + "/" + nameof(AutoGenerateCode), AutoGenerate);
-            };
-            EditorApplication.RepaintProjectWindow();
+           
             ProjectFilesGenerator.ProjectFileGeneration += OnProjectFileGeneration;
 
-            var defaultOrbs = Resources.LoadAll("Defaults");
-            foreach (var t in types.Where(t=>!t.IsAbstract))
-            {
-                if (defaultOrbs.Any(o => o.GetType() == t)) continue;
-                var ass = ScriptableObject.CreateInstance(t);
-
-                var outputPath = ($"Assets/OrbPrefabs/Resources/Defaults/Default{t.Name}.asset");
-                
-                AssetDatabase.CreateAsset(ass,outputPath );
-            }
+            
         }
 
         static string OnProjectFileGeneration(string name, string content)

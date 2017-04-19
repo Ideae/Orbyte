@@ -10,7 +10,8 @@ public class Shooter : Orb<Shooter>, IAimedActionOrb
     public void OnAimedActionDown(Vector2 target)
     {
         Vector3 dir = new Vector3(target.x - Node.transform.position.x, target.y - Node.transform.position.y, 0f).normalized;
-        Node n = Node.room.SpawnNode(Vector2.zero, orbs);
+        
+        Node n = Node.room.SpawnNode(Vector2.zero, orbs, cloneOrbs:true);
         n.transform.position = Node.transform.position + dir * (Node.core.Radius + n.core.Radius);
         n.rb.AddForce(dir * shootForce);
     }

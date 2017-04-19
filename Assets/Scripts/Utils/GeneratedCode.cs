@@ -20,6 +20,8 @@ public static readonly string EditorOnly = "EditorOnly";
 public static readonly string MainCamera = "MainCamera";
 public static readonly string Player = "Player";
 public static readonly string GameController = "GameController";
+public static readonly string T1 = "T1";
+public static readonly string T2 = "T2";
 }
 
 public enum Layers
@@ -32,6 +34,7 @@ UI = 5,
 Walls = 8,
 Nodes = 9,
 Bullets = 10,
+Upper = 11,
 }
 
 public static class OrbLists
@@ -44,9 +47,11 @@ public static IList Create(Type t) => dict[t]();
 static OrbLists()
 {
 dict[typeof(Gravity)] = ()=> new List< Gravity>();
+dict[typeof(Player)] = ()=> new List< Player>();
+dict[typeof(Orb)] = ()=> new List< Orb>();
+dict[typeof(Core)] = ()=> new List< Core>();
 dict[typeof(ForceMove)] = ()=> new List< ForceMove>();
-dict[typeof(Shooter)] = ()=> new List< Shooter>();
-dict[typeof(HueShifter)] = ()=> new List< HueShifter>();
+dict[typeof(Bomb)] = ()=> new List< Bomb>();
 dict[typeof(IDrawOrb)] = ()=> new List< IDrawOrb>();
 dict[typeof(IAffectSelfOrb)] = ()=> new List< IAffectSelfOrb>();
 dict[typeof(IAffectOtherOrb)] = ()=> new List< IAffectOtherOrb>();
@@ -55,8 +60,9 @@ dict[typeof(IFixedAffectSelf)] = ()=> new List< IFixedAffectSelf>();
 dict[typeof(IAimedActionOrb)] = ()=> new List< IAimedActionOrb>();
 dict[typeof(IActionOrb)] = ()=> new List< IActionOrb>();
 dict[typeof(IMovementOrb)] = ()=> new List< IMovementOrb>();
-dict[typeof(Bomb)] = ()=> new List< Bomb>();
-dict[typeof(Player)] = ()=> new List< Player>();
+dict[typeof(Lifetime)] = ()=> new List< Lifetime>();
+dict[typeof(HueShifter)] = ()=> new List< HueShifter>();
+dict[typeof(Shooter)] = ()=> new List< Shooter>();
 
 }
 }

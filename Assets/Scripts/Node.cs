@@ -8,8 +8,7 @@ using Vexe.Runtime.Types;
 public class Node : BaseBehaviour
 {
   public Room room;
-  [PerItem, Inline, SerializeField] private List<Orb> orbPrefabs = new List<Orb>();
-    [PerItem, Inline, SerializeField] public readonly List<Orb> orbs = new List<Orb>();
+    [PerItem, Inline, SerializeField] public List<Orb> orbs = new List<Orb>();
     public Rigidbody2D rb => GetComponent<Rigidbody2D>();
   public MeshRenderer mr => GetComponent<MeshRenderer>();
   
@@ -21,6 +20,7 @@ public class Node : BaseBehaviour
         get { return _aimedActionOrb; }
         set
         {
+          
             if (_aimedActionOrb != null) _aimedActionOrb.IsActive = false;
             if (value != null) value.IsActive = true;
             _aimedActionOrb = value;
@@ -53,16 +53,19 @@ public class Node : BaseBehaviour
 
   public void Awake()
   {
-        orbs.Clear();
-        AddOrbs(orbPrefabs, byCopy:true);
+    for (var i = 0; i < orbs.Count; i++)
+    {
+      Orb o = orbs[i];
+      orbs.RemoveAt(i);
+      AddOrb(o.Clone(), i);
+    }
 
-      if (core == null)
+    if (core == null)
       {
           core = Core.CreateOrb();
           this.AddOrb(core);
       }
-
-    }
+  }
     public T GetOrb<T>() where T:class
     {
         foreach (var orb in orbs)
@@ -80,19 +83,44 @@ public class Node : BaseBehaviour
         return ret;
     }
     
-
-    Tuple<Orb, int> pendingAdd;
-    public void AddOrb(Orb o, int? index = null)
+  
+    public void AddOrb(Orb orb, int? index = null)
   {
-      if (pendingAdd != null && index.HasValue)  Debug.LogError("Recursive indexed inserting not allowed;");
-      else if (index.HasValue && orbs.Count > index.Value) pendingAdd = new Tuple<Orb, int>(o, index.Value); 
-      o.Node = this;
+
+      orb.Node?.RemoveOrb(orb);
+    if (index.HasValue) orbs.Insert(index.Value, orb);
+    else orbs.Add(orb);
+
+    orb._node = this;
+      orb.OnAttach();
+
+    if (orb.IsActive)
+    {
+      orb.OnActivate();
+      OnActivateOrb(orb);
+    }
+
+    OnOrbsChanged?.Invoke(this);
   }
 
 
-  public void RemoveOrb(Orb o)
+
+  public void RemoveOrb(Orb orb)
   {
-    o.Node = null;
+
+    if (orb.IsActive)
+    {
+      orb.OnDeactivate();
+      orb.Node.OnDeactivateOrb(orb);
+    }
+    orb.OnDetach();
+    orb._node = null;
+
+
+    orbs.Remove(orb);
+
+    OnOrbsChanged?.Invoke(this);
+
   }
 
   public void Update()
@@ -101,6 +129,7 @@ public class Node : BaseBehaviour
       foreach(IDrawOrb o in GetActiveOrbs<IDrawOrb>()) o.Draw();
       foreach (var o in GetActiveOrbs<IAffectOtherOrb>())
       {
+        
           foreach (var other in room.nodes)
           {
                 //This if condition might justify turning room.nodes into a hashset :(
@@ -127,7 +156,7 @@ public class Node : BaseBehaviour
     }
     public void DeleteNode()
   {
-        RemoveAllOrbs();
+        DeleteAllOrbs();
         Destroy(gameObject);
   }
 
@@ -144,12 +173,12 @@ public class Node : BaseBehaviour
         AimedActionOrb.OnAimedActionDown(worldPos);
     }
 
-    public void RemoveAllOrbs(bool skipCore = false)
+    public void DeleteAllOrbs(bool skipCore = false)
     {
         foreach (var o in orbs)
         {
             if(skipCore && ReferenceEquals(o, core)) continue;
-            o.Node = null;
+            RemoveOrb(o);
             o.OnDelete();
         }
         orbs.Clear();
@@ -213,27 +242,14 @@ public class Node : BaseBehaviour
         if (ReferenceEquals(orb, AimedActionOrb)) AimedActionOrb = null;
     }
 
-    public void AddOrbs(List<Orb> list, bool byCopy = false)
+    public void AddOrbs(List<Orb> list, bool clone = false)
     {
         
         foreach (var o in list)
         {
-            var oo = byCopy ? o.MakeCopy():o;
+            var oo = clone ? o.Clone():o;
             AddOrb(oo);
         }
-    }
-
-    public void OnOrbRemoved(Orb orb)
-    {
-        orbs.Remove(orb);
-        OnOrbsChanged?.Invoke(this);
-
-    }
-    public void OnOrbAdded(Orb orb)
-    {
-
-        orbs.Add(orb);
-        OnOrbsChanged?.Invoke(this);
     }
 
     public void LookTowards(Vector2 v, bool immediately = false)

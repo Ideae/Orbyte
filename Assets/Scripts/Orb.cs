@@ -71,38 +71,10 @@ public abstract class Orb<T> :  Orb where T : Orb<T>
         }
     }
 
-    [HideInInspector] Node _node;
-    public override Node Node
-    {
-        get { return _node; }
-        set
-        {
-            if (_node == value) return;
-            if (IsActive)
-            {
-                this.OnDeactivate();
-                _node?.OnDeactivateOrb(this);
-            }
-            if (_node) this.OnDetach();
-            var n = _node;
-            _node = value;
-            n?.OnOrbRemoved(this);
-            if (value == null) return;
-            _node.OnOrbAdded(this);
-            this.OnAttach();
-            if (!IsActive) return;
-            this.OnActivate();
-            _node.OnActivateOrb(this);
-        }
-    }
-    protected virtual void OnCreate() { }
-    protected virtual void OnAttach() { }
-    protected virtual void OnActivate() { }
-    protected virtual void OnDeactivate() { }
-    protected virtual void OnDetach() { }
-    public override void OnDelete() { }
+    [HideInInspector]
+    public override Node Node => _node;
 
-    public override Orb MakeCopy() => Instantiate(this);
+  public override Orb Clone() => Instantiate(this);
 
     protected void OnDestroy() { /*Called on garbage collect*/ }
     protected void OnDisable() { /*Debug.LogWarning("Don't Call this");*/ }
@@ -110,17 +82,26 @@ public abstract class Orb<T> :  Orb where T : Orb<T>
 }
 
 
-public abstract class Orb: BaseScriptableObject
+public abstract class Orb: BaseScriptableObject, IOrbType
 {
+
+    public virtual void OnCreate() { }
+    public virtual void OnAttach() { }
+    public virtual void OnActivate() { }
+    public virtual void OnDeactivate() { }
+    public virtual void OnDetach() { }
+    public void OnDelete() {  }
+
+
     public abstract bool IsActive { get; set; }
     public abstract Type[] Interfaces { get; }
-    public abstract Node Node { get; set; }
+    public abstract Node Node { get; }
     public abstract string Name { get; }
-    public abstract void OnDelete();
-    public abstract Orb MakeCopy();
+    public abstract Orb Clone();
+    public Node _node;
 
-    public static readonly Type[] AllOrbTypes;
-    public static List<Orb> DefaultOrbs;
+    [HideInInspector] public static readonly Type[] AllOrbTypes;
+    [HideInInspector] public static List<Orb> DefaultOrbs;
 
     static Orb()
     {
@@ -135,4 +116,15 @@ public abstract class Orb: BaseScriptableObject
 
         DefaultOrbs = Resources.LoadAll("Defaults").Cast<Orb>().ToList();
     }
+}
+
+
+public interface IOrbType
+{
+  bool IsActive { get; set; }
+  Type[] Interfaces { get; }
+  Node Node { get; }
+  string Name { get; }
+  void OnDelete();
+  Orb Clone();
 }

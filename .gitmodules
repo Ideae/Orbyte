@@ -1,6 +1,6 @@
-[submodule "Assets/Scripts/VFW-improved"]
-	path = Assets/Scripts/VFW-improved
+[submodule "Assets/Includes/VFW-improved"]
+	path = Assets/Includes/VFW-improved
 	url = https://github.com/MHDante/VFW.git
-[submodule "Assets/Scripts/unity-ui-extensions"]
-	path = Assets/Scripts/unity-ui-extensions
+[submodule "Assets/Includes/unity-ui-extensions"]
+	path = Assets/Includes/unity-ui-extensions
 	url = https://bitbucket.org/MHDante/unity-ui-extensions.git

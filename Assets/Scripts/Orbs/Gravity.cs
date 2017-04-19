@@ -22,11 +22,11 @@ public class Gravity : Orb<Gravity>, IFixedAffectOther, IDrawOrb
     Node.mr.material.SetFloat("_Frequency", multiplier/5f);
   }
 
-  protected override void OnAttach()
+  public override void OnAttach()
   {
     Node.mr.material.SetFloat("_Gravity", 1);
   }
-  protected override void OnDetach()
+  public override void OnDetach()
   {
     Node.mr.material.SetFloat("_Gravity", 0);
   }

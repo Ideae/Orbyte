@@ -27,7 +27,7 @@ public interface IFixedAffectSelf : IOrbType
 
 public interface IAimedActionOrb : IOrbType
 {
-	bool IsActive { get; set; }
+	new bool IsActive { get; set; }
 	void OnAimedActionDown(Vector2 target);
 	void OnAimedActionHeld(Vector2 target);
 	void OnAimedActionUp(Vector2 target);
@@ -35,7 +35,7 @@ public interface IAimedActionOrb : IOrbType
 
 public interface IActionOrb : IOrbType
 {
-	bool IsActive { get; set; }
+	new bool IsActive { get; set; }
 	void OnActionDown();
 	void OnActionHeld();
 	void OnActionUp();
@@ -43,7 +43,7 @@ public interface IActionOrb : IOrbType
 
 public interface IMovementOrb : IOrbType
 {
-	bool IsActive { get; set; }
+	new bool IsActive { get; set; }
 	void ProcessMovement();
 	bool ReachedRotationTarget(float target);
 	bool ReachedPositionTarget(Vector2 target);

@@ -205,7 +205,7 @@ public class Node : BaseBehaviour
 
 	public void AimedActionUp(Vector2 worldPos)
 	{
-		AimedActionOrb.OnAimedActionDown(worldPos);
+		AimedActionOrb.OnAimedActionDown(worldPos); 
 	}
 
 	public void DeleteAllOrbs(bool skipCore = false)

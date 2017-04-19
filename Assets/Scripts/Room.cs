@@ -43,7 +43,7 @@ public class Room : MonoBehaviour
 	void DeleteAllNodes()
 	{
 		for (var i = 0; i < nodes.Count; i++)
-		{
+		{ 
 			var n = nodes[i];
 			if (n.GetOrb<Player>() != null) continue;
 			n.DeleteNode();

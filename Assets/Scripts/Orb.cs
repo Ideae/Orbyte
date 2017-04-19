@@ -24,12 +24,16 @@ public abstract class Orb<T> : Orb where T : Orb<T>
 	static Orb()
 	{
 		customProperties = new List<CustomProperty>();
+		inspectableVariables = new List<FPInfo>();
 		var t = typeof(T);
-		foreach (var p in t.GetProperties(BindingFlags.Instance))
+		foreach (var p in t.GetProperties(BindingFlags.Instance | BindingFlags.Public))
 		{
 			var cp = p.GetCustomAttribute<CustomPropertyAttribute>();
 			if (cp != null)
+			{
 				customProperties.Add(new CustomProperty(p, t.GetField(cp.fieldName, BindingFlags.Instance)));
+				inspectableVariables.Add(new FPInfo(p));
+			}
 		}
 		foreach (var f in t.GetFields(BindingFlags.Instance | BindingFlags.Public))
 		{

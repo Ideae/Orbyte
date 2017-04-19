@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Vexe.Runtime.Types;
 
@@ -19,8 +20,9 @@ public class Node : BaseBehaviour
 	public Room room;
 
 	public float rotationTarget;
-	public Rigidbody2D RB => GetComponent<Rigidbody2D>();
-	public MeshRenderer MR => GetComponent<MeshRenderer>();
+	public Rigidbody2D RB { get; private set; }
+	
+	public MeshRenderer MR { get; private set; }
 
 	public IAimedActionOrb AimedActionOrb
 	{
@@ -86,12 +88,13 @@ public class Node : BaseBehaviour
 
 	public void Awake()
 	{
-		for (var i = 0; i < orbs.Count; i++)
-		{
-			var o = orbs[i];
-			orbs.RemoveAt(i);
-			AddOrb(o.Clone(), i);
-		}
+		RB = GetComponent<Rigidbody2D>();
+		MR = GetComponent<MeshRenderer>();
+
+		var orbPrefabs = orbs;
+		orbs = new List<Orb>();
+		AddOrbs(orbPrefabs, clone:true);
+			
 
 		if (core == null)
 		{
@@ -205,7 +208,8 @@ public class Node : BaseBehaviour
 
 	public void DeleteAllOrbs(bool skipCore = false)
 	{
-		foreach (var o in orbs)
+		print("Cause I think");
+		foreach (var o in new List<Orb>(orbs))
 		{
 			if (skipCore && ReferenceEquals(o, core)) continue;
 			RemoveOrb(o);

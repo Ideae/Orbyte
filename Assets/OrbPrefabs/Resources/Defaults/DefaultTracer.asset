@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ce3291e51bd4ae3b5fad838b15dc028, type: 3}
+  m_Name: DefaultTracer
+  m_EditorClassIdentifier: 
+  _id: -1126640
+  dbg: 0
+  Prefs:
+    _Buckets: 0400000003000000ffffffff01000000ffffffffffffffffffffffff
+    _HashCodes: f9addd2772045f599caec55b975ced02965ced020000000000000000
+    _Next: ffffffffffffffffffffffff00000000020000000000000000000000
+    _Count: 5
+    _Version: 4220
+    _FreeList: -1
+    _FreeCount: 0
+    _Keys: f9addda772045fd99caec55b975ced02965ced020000000000000000
+    _Values:
+    - ValueString: 
+      ValueFloat: 8
+      Type: 0
+    - ValueString: 
+      ValueFloat: 0
+      Type: 0
+    - ValueString: 
+      ValueFloat: 0
+      Type: 2
+    - ValueString: 
+      ValueFloat: 14
+      Type: 1
+    - ValueString: 
+      ValueFloat: 53
+      Type: 1
+    - ValueString: 
+      ValueFloat: 0
+      Type: 0
+    - ValueString: 
+      ValueFloat: 0
+      Type: 0
+  _node: {fileID: 0}
+  _isActive: 1
+  _material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  _color: {r: 1, g: 1, b: 1, a: 1}
+  _time: 5

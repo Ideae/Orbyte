@@ -8,15 +8,12 @@ public class UIManager : Singleton<UIManager>
 	public OrbListPanel otherOrbList;
 	public OrbListPanel playerOrbList;
 	public Text nodeCounterText;
+	public GameObject inspectorPanel;
 	public Node SelectedNode { get; private set; }
 	public Player Player { get; private set; }
 	public Room CurrentRoom { get; private set; }
 
-
-	void Awake()
-	{
-	}
-
+	
 	public void SelectNode(Node n)
 	{
 		SelectedNode = n;

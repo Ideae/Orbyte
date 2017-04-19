@@ -3,8 +3,13 @@
 [CreateAssetMenu(menuName = "Orbs/" + nameof(Player))]
 public class Player : Orb<Player>, IAimedActionOrb, IAffectSelfOrb
 {
-	bool _isInspecting;
 
+	public override bool IsActive
+	{
+		get { return true; }
+		set { }
+	}
+	
 	public void AffectSelf()
 	{
 		if (Input.GetMouseButton(1))
@@ -20,13 +25,7 @@ public class Player : Orb<Player>, IAimedActionOrb, IAffectSelfOrb
 		}
 		if (Node.MovementDirectionTarget.magnitude > .3f) Node.LookTowards(Node.MovementDirectionTarget);
 	}
-
-	bool IAimedActionOrb.IsActive
-	{
-		get { return base.IsActive && _isInspecting; }
-		set { _isInspecting = value; }
-	}
-
+	
 	public void OnAimedActionDown(Vector2 target)
 	{
 		var coll = Physics2D.OverlapPoint(target);

@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-public static class Utils
+public static partial class Utils
 {
 	public static bool DebugMode => Application.isEditor;
 

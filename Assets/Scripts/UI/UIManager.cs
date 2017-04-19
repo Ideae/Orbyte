@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using UnityEngine.UI.Extensions;
 
 public class UIManager : Singleton<UIManager>
 {
 	public OrbListPanel otherOrbList;
-
 	public OrbListPanel playerOrbList;
+	public Text nodeCounterText;
 	public Node SelectedNode { get; private set; }
 	public Player Player { get; private set; }
 	public Room CurrentRoom { get; private set; }
@@ -33,6 +34,7 @@ public class UIManager : Singleton<UIManager>
 	public void Update()
 	{
 		CheckMouse();
+		nodeCounterText.text = CurrentRoom.nodes.Count.ToString();
 	}
 
 	void CheckMouse()

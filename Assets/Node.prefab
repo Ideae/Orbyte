@@ -99,9 +99,9 @@ Rigidbody2D:
   m_AngularDrag: 0.05
   m_GravityScale: 0
   m_Material: {fileID: 0}
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!58 &58866322405196330
 CircleCollider2D:
@@ -111,7 +111,7 @@ CircleCollider2D:
   m_GameObject: {fileID: 1921076495060454}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: c275e90ba7e059e4f8dbaf1ba6baa2da, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -132,14 +132,14 @@ MonoBehaviour:
   _id: 10908
   dbg: 0
   Prefs:
-    _Buckets: 01000000ffffffff03000000ffffffff020000000500000004000000
-    _HashCodes: edc3f729661a795b90c4df5d50d2751f230516442205164400000000
-    _Next: ffffffffffffffffffffffffffffffffffffffff0000000000000000
-    _Count: 6
-    _Version: 2132
+    _Buckets: 0100000007000000ffffffffffffffffffffffffffffffff00000000ffffffffffffffffffffffff0500000006000000ffffffff03000000ffffffffffffffffffffffff
+    _HashCodes: edc3f729661a795b90c4df5d50d2751f2305164422051644ddadb50ed381f571000000000000000000000000000000000000000000000000000000000000000000000000
+    _Next: ffffffffffffffffffffffffffffffffffffffff0200000004000000ffffffff000000000000000000000000000000000000000000000000000000000000000000000000
+    _Count: 8
+    _Version: 8517
     _FreeList: -1
     _FreeCount: 0
-    _Keys: edc3f7a9661a79db90c4df5d50d2759f230516442205164400000000
+    _Keys: edc3f7a9661a79db90c4df5d50d2759f2305164422051644ddadb50ed381f571000000000000000000000000000000000000000000000000000000000000000000000000
     _Values:
     - ValueString: 
       ValueFloat: 8
@@ -151,16 +151,49 @@ MonoBehaviour:
       ValueFloat: 0
       Type: 2
     - ValueString: 
-      ValueFloat: 0
+      ValueFloat: 1
       Type: 2
     - ValueString: 
       ValueFloat: 14
       Type: 1
     - ValueString: 
-      ValueFloat: 408
+      ValueFloat: 372
       Type: 1
     - ValueString: 
       ValueFloat: 0
       Type: 0
+    - ValueString: 
+      ValueFloat: 1
+      Type: 2
+    - ValueString: 
+      ValueFloat: 0
+      Type: 0
+    - ValueString: 
+      ValueFloat: 0
+      Type: 0
+    - ValueString: 
+      ValueFloat: 0
+      Type: 0
+    - ValueString: 
+      ValueFloat: 0
+      Type: 0
+    - ValueString: 
+      ValueFloat: 0
+      Type: 0
+    - ValueString: 
+      ValueFloat: 0
+      Type: 0
+    - ValueString: 
+      ValueFloat: 0
+      Type: 0
+    - ValueString: 
+      ValueFloat: 0
+      Type: 0
+    - ValueString: 
+      ValueFloat: 0
+      Type: 0
+  core: {fileID: 0}
+  orbs:
+  - {fileID: 11400000, guid: f0dfd079e5de9864bbdd009fe805b81c, type: 2}
   room: {fileID: 0}
-  orbs: []
+  rotationTarget: 0

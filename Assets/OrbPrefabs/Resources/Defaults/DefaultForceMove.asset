@@ -11,29 +11,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7664842b02a56459d55f75888b9854, type: 3}
   m_Name: DefaultForceMove
   m_EditorClassIdentifier: 
-  _id: -1
+  _id: 10900
   dbg: 0
   Prefs:
-    _Buckets: ffffffffffffffffffffffff
-    _HashCodes: 000000000000000000000000
-    _Next: 000000000000000000000000
-    _Count: 0
-    _Version: 0
+    _Buckets: ffffffff02000000000000000400000003000000ffffffffffffffff
+    _HashCodes: f5c2f7296e19795b98c3df5d1be715441ae715440000000000000000
+    _Next: ffffffffffffffffffffffff01000000ffffffff0000000000000000
+    _Count: 5
+    _Version: 485
     _FreeList: -1
     _FreeCount: 0
-    _Keys: 000000000000000000000000
+    _Keys: f5c2f7a96e1979db98c3df5d1be715441ae715440000000000000000
     _Values:
     - ValueString: 
-      ValueFloat: 0
+      ValueFloat: 8
       Type: 0
     - ValueString: 
       ValueFloat: 0
       Type: 0
     - ValueString: 
       ValueFloat: 0
+      Type: 2
+    - ValueString: 
+      ValueFloat: 14
+      Type: 1
+    - ValueString: 
+      ValueFloat: 53
+      Type: 1
+    - ValueString: 
+      ValueFloat: 0
       Type: 0
-  _isActive: 0
-  force: 5
+    - ValueString: 
+      ValueFloat: 0
+      Type: 0
+  _node: {fileID: 0}
+  _isActive: 1
   boost: 10
-  torque: 1
+  force: 5
   stopSuddenly: 0
+  torque: 1

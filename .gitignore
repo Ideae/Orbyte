@@ -28,3 +28,6 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+/Includes/CodeGeneration/obj/Debug
+/Includes/CodeGeneration/obj/Debug
+/Assets/Plugins/unity-ui-extensions

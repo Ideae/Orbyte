@@ -12,12 +12,7 @@ public class UIManager : Singleton<UIManager>
 	public Player Player { get; private set; }
 	public Room CurrentRoom { get; private set; }
 
-
-	void Awake()
-	{
-		Orb.Initialize();
-	}
-
+	
 	public void SelectNode(Node n)
 	{
 		SelectedNode = n;

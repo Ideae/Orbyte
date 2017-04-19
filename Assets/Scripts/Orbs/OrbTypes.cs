@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 
+public interface IOrbType
+{
+}
 public interface IDrawOrb : IOrbType
 {
 	void Draw();

@@ -20,7 +20,7 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 		{
 			if (applicationIsQuitting)
 			{
-				Debug.LogWarning("[Singleton] Instance '" + typeof(T) +
+				Debug.LogWarning("[Singleton] Instance '" + FastType<T>.type +
 				                 "' already destroyed on application quit." +
 				                 " Won't create again - returning null.");
 				return null;
@@ -30,9 +30,9 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 			{
 				if (_instance == null)
 				{
-					_instance = (T)FindObjectOfType(typeof(T));
+					_instance = (T)FindObjectOfType(FastType<T>.type);
 
-					if (FindObjectsOfType(typeof(T)).Length > 1)
+					if (FindObjectsOfType(FastType<T>.type).Length > 1)
 					{
 						Debug.LogError("[Singleton] Something went really wrong " +
 						               " - there should never be more than 1 singleton!" +
@@ -44,11 +44,11 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 					{
 						var singleton = new GameObject();
 						_instance = singleton.AddComponent<T>();
-						singleton.name = "(singleton) " + typeof(T);
+						singleton.name = "(singleton) " + FastType<T>.type;
 
 						DontDestroyOnLoad(singleton);
 
-						Debug.Log("[Singleton] An instance of " + typeof(T) +
+						Debug.Log("[Singleton] An instance of " + FastType<T>.type +
 						          " is needed in the scene, so '" + singleton +
 						          "' was created with DontDestroyOnLoad.");
 					}

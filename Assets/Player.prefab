@@ -38,7 +38,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1679608327609746}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: -4.1128182, y: -0.19232985, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -99,9 +99,9 @@ Rigidbody2D:
   m_AngularDrag: 0.05
   m_GravityScale: 0
   m_Material: {fileID: 0}
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!58 &58624920758077010
 CircleCollider2D:
@@ -129,40 +129,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5aeadfd2b220a15409dce71570a26246, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _id: 34046
-  dbg: 0
-  Prefs:
-    _Buckets: 00000000ffffffff01000000ffffffffffffffffffffffff03000000
-    _HashCodes: cbb5022a440c845b6eb6ea5daec48b48000000000000000000000000
-    _Next: ffffffffffffffffffffffff02000000000000000000000000000000
-    _Count: 4
-    _Version: 242
-    _FreeList: -1
-    _FreeCount: 0
-    _Keys: cbb502aa440c84db6eb6ea5daec48bc8000000000000000000000000
-    _Values:
-    - ValueString: 
-      ValueFloat: 8
-      Type: 0
-    - ValueString: 
-      ValueFloat: 0
-      Type: 0
-    - ValueString: 
-      ValueFloat: 0
-      Type: 2
-    - ValueString: 
-      ValueFloat: 0
-      Type: 2
-    - ValueString: 
-      ValueFloat: 0
-      Type: 0
-    - ValueString: 
-      ValueFloat: 0
-      Type: 0
-    - ValueString: 
-      ValueFloat: 0
-      Type: 0
-  room: {fileID: 0}
   orbs:
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: f55e916f6589a8845b3f16dfef7474cf, type: 2}
+  - {fileID: 11400000, guid: bfa0f8f7be1375045a4c9f6dd8ad68b9, type: 2}
+  - {fileID: 11400000, guid: c0ea8688b712d2945a43d9d651237555, type: 2}
+  _aimedIndex: 0
+  _actionIndex: 0
+  _movementIndex: 0
+  _coreIndex: 0

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using JetBrains.Annotations;
 using UnityEngine;
 
 public struct FPInfo
@@ -17,7 +18,7 @@ public struct FPInfo
 
 	public string Name => memberInfo.Name;
 
-	public Type Type =>
+	public Type memberType =>
 		(memberInfo as PropertyInfo)?.PropertyType ??
 		(memberInfo as FieldInfo)?.FieldType;
 
@@ -41,19 +42,20 @@ public struct FPInfo
 	public IEnumerable<T> GetCustomAttributes<T>() where T : Attribute => memberInfo.GetCustomAttributes<T>();
 	public IEnumerable<Attribute> GetCustomAttributes(Type attrType) => memberInfo.GetCustomAttributes(attrType);
 
-	public object[] GetCustomAttributes(Type attributeType, bool inherit) => memberInfo.GetCustomAttributes(attributeType, inherit);
+	public object[] GetCustomAttributes(Type attributeType, bool inherit) => memberInfo.GetCustomAttributes(attributeType,
+	                                                                                                        inherit);
 
 	public object[] GetCustomAttributes(bool inherit) => memberInfo.GetCustomAttributes(inherit);
 
 	public bool IsDefined(Type attributeType, bool inherit) => memberInfo.IsDefined(attributeType, inherit);
-
+	[Pure]
 	public object GetValue(object obj) =>
 		(memberInfo as PropertyInfo)?.GetValue(obj) ??
 		(memberInfo as FieldInfo)?.GetValue(obj);
 
 	public object GetValue<T>(object obj) =>
-		(T) ((memberInfo as PropertyInfo)?.GetValue(obj) ??
-		(memberInfo as FieldInfo)?.GetValue(obj));
+		(T)((memberInfo as PropertyInfo)?.GetValue(obj) ??
+			(memberInfo as FieldInfo)?.GetValue(obj));
 
 
 	public void SetValue(object obj, object value)
@@ -61,4 +63,7 @@ public struct FPInfo
 		(memberInfo as PropertyInfo)?.SetValue(obj, value);
 		(memberInfo as FieldInfo)?.SetValue(obj, value);
 	}
+
+	public static bool operator ==(FPInfo left, FPInfo right) => left.memberInfo == right.memberInfo;
+	public static bool operator !=(FPInfo left, FPInfo right) => left.memberInfo != right.memberInfo;
 }

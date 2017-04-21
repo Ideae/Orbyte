@@ -12,12 +12,12 @@ public class ForceMove : Orb<ForceMove>, IMovementOrb
 	public void ProcessMovement()
 	{
 		var b = Input.GetKey(KeyCode.LeftShift) ? boost : 0f;
-		var direction = Vector2.ClampMagnitude(Node.MovementDirectionTarget, 1);
+		var direction = Vector2.ClampMagnitude(Node.MovementDirection, 1);
 
 		if (direction.sqrMagnitude.Approx(0) && stopSuddenly) Node.RB.velocity = Vector2.zero;
 		else Node.RB.AddForce(direction * (force + b));
 
-		var t = Clamp(DeltaAngle(Node.RB.rotation, Node.rotationTarget), -torque, torque);
+		var t = Clamp(DeltaAngle(Node.RB.rotation, Node.rotationGoal), -torque, torque);
 		if (t.Approx(0) && stopSuddenly) Node.RB.angularVelocity = 0;
 		else Node.RB.AddTorque(t);
 	}

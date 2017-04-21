@@ -2,9 +2,10 @@
 
 public interface IOrbType
 {
+	Node Node { get; }
 }
 
-public interface IEquippable
+public interface IEquippable : IOrbType
 {
 	void OnEquip();
 	void OnUnequip();
@@ -59,53 +60,17 @@ public static partial class Utils
 {
 	public static bool IsEquipped(this IEquippable equippableOrb)
 	{
-		Orb o = (Orb)equippableOrb;
-		if (o.Node == null) return false;
-		if (equippableOrb is IAimedActionOrb)
-		{
-			return o.Node.aimedActionOrb == equippableOrb;
-		}
-		else if (equippableOrb is IActionOrb)
-		{
-			return o.Node.actionOrb == equippableOrb;
-		}
-		else if (equippableOrb is IMovementOrb)
-		{
-			return o.Node.movementOrb == equippableOrb;
-		}
-		return false;
+		Orb o = equippableOrb as Orb;
+		if (o?.Node == null) return false;
+		return (o.Node.AimedActionOrb == equippableOrb) 
+			|| (o.Node.ActionOrb == equippableOrb) 
+			|| (o.Node.MovementOrb == equippableOrb);
 	}
 
-	public static void SetEquipped(this IEquippable equippableOrb)
+	public static void SetEquipped(this IEquippable orb, bool equip)
 	{
-		Orb o = (Orb)equippableOrb;
-		if (o.Node == null) return;
-		if (equippableOrb is IAimedActionOrb)
-		{
-			if (equippableOrb != o.Node.aimedActionOrb)
-			{
-				o.Node.aimedActionOrb?.OnUnequip();
-				o.Node.aimedActionOrb = (IAimedActionOrb)equippableOrb;
-				o.Node.aimedActionOrb.OnEquip();
-			}
-		}
-		else if (equippableOrb is IActionOrb)
-		{
-			if (equippableOrb != o.Node.actionOrb)
-			{
-				o.Node.actionOrb?.OnUnequip();
-				o.Node.actionOrb = (IActionOrb)equippableOrb;
-				o.Node.actionOrb.OnEquip();
-			}
-		}
-		else if (equippableOrb is IMovementOrb)
-		{
-			if (equippableOrb != o.Node.movementOrb)
-			{
-				o.Node.movementOrb?.OnUnequip();
-				o.Node.movementOrb = (IMovementOrb)equippableOrb;
-				o.Node.movementOrb.OnEquip();
-			}
-		}
+		if (equip) orb?.Node.Equip(orb);
+		else orb?.Node.UnEquip(orb);
+		
 	}
 }

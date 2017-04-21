@@ -3,26 +3,48 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Vexe.Runtime.Types;
 
-public class Node : BaseBehaviour
+public class Node : MonoBehaviour
 {
+	[NonSerialized] public Room room; 
+	[SerializeField, HideInInspector] private List<Orb> orbs = new List<Orb>();
+	public IReadOnlyList<Orb> Orbs => orbs;
+
 	readonly Dictionary<Type, IList> _activeOrbsbyType = new Dictionary<Type, IList>();
-	bool _isPositionTarget;
-	Vector2 _movementTarget;
-
-	public Core core;
-	[PerItem] [Inline] [SerializeField] public List<Orb> orbs = new List<Orb>();
-	public Room room;
-
-	public float rotationTarget;
-	public Rigidbody2D RB { get; private set; }
 	
+	public Rigidbody2D RB { get; private set; }
 	public MeshRenderer MR { get; private set; }
 
-	public IAimedActionOrb aimedActionOrb;
-	public IActionOrb actionOrb;
-	public IMovementOrb movementOrb;
+	[SerializeField, HideInInspector] int _aimedIndex, _actionIndex, _movementIndex, _coreIndex;
+	public Core core => orbs.ElementAtOrDefault(_coreIndex) as Core;
+	public IAimedActionOrb AimedActionOrb => orbs.ElementAtOrDefault(_aimedIndex) as IAimedActionOrb;
+	public IActionOrb ActionOrb => orbs.ElementAtOrDefault(_actionIndex) as IActionOrb;
+	public IMovementOrb MovementOrb => orbs.ElementAtOrDefault(_movementIndex) as IMovementOrb;
+
+	[NonSerialized] public bool HasPositionTarget = false;
+	//This could be either a target position or direction depending on HasPositionTarget
+	Vector2 _movementGoal; 
+	public Vector2 MovementDirection
+	{
+		get { return HasPositionTarget ? _movementGoal - Position : _movementGoal; }
+		set
+		{
+			HasPositionTarget = false;
+			_movementGoal = value;
+		}
+	}
+
+	public Vector2? MovementPositionTarget
+	{
+		get { return HasPositionTarget ? (Vector2?)_movementGoal : null; }
+		set
+		{
+			HasPositionTarget = value.HasValue;
+			_movementGoal = value ?? Vector2.zero;
+		}
+	}
+
+	public float rotationGoal { get; set; }
 
 	public Vector2 Position
 	{
@@ -30,26 +52,6 @@ public class Node : BaseBehaviour
 		set { transform.position = value; }
 	}
 
-	public Vector2 MovementDirectionTarget
-	{
-		get { return _isPositionTarget ? _movementTarget - Position : _movementTarget; }
-		set
-		{
-			_isPositionTarget = false;
-			_movementTarget = value;
-		}
-	}
-
-
-	public Vector2? MovementPositionTarget
-	{
-		get { return _isPositionTarget ? (Vector2?)_movementTarget : null; }
-		set
-		{
-			_isPositionTarget = value.HasValue;
-			_movementTarget = value ?? Vector2.zero;
-		}
-	}
 
 	public event Action<Node> OnOrbsChanged;
 
@@ -60,15 +62,14 @@ public class Node : BaseBehaviour
 
 		var orbPrefabs = orbs;
 		orbs = new List<Orb>();
+		
 		AddOrbs(orbPrefabs, clone:true);
-			
-
 		if (core == null)
 		{
-
-			core = Core.GetDefault();
-			core.IsActive = true;
-			AddOrb(core);
+			var newCore = Core.GetDefault();
+			newCore.IsActive = true;
+			AddOrb(newCore);
+			Equip(newCore);
 		}
 	}
 
@@ -81,9 +82,9 @@ public class Node : BaseBehaviour
 
 	List<T> GetActiveOrbs<T>() where T : IOrbType
 	{
-		if (_activeOrbsbyType.ContainsKey(typeof(T))) return (List<T>)_activeOrbsbyType[typeof(T)];
+		if (_activeOrbsbyType.ContainsKey(FastType<T>.type)) return (List<T>)_activeOrbsbyType[FastType<T>.type];
 		var ret = new List<T>();
-		_activeOrbsbyType[typeof(T)] = ret;
+		_activeOrbsbyType[FastType<T>.type] = ret;
 		return ret;
 	}
 
@@ -151,9 +152,8 @@ public class Node : BaseBehaviour
 				o.FixedAffectOther(other);
 			}
 		}
-		movementOrb?.ProcessMovement();
+		MovementOrb?.ProcessMovement();
 	}
-
 	public void DeleteNode()
 	{
 		DeleteAllOrbs();
@@ -162,17 +162,17 @@ public class Node : BaseBehaviour
 
 	public void AimedActionDown(Vector2 worldPos)
 	{
-		aimedActionOrb?.OnAimedActionDown(worldPos);
+		AimedActionOrb?.OnAimedActionDown(worldPos);
 	}
 
 	public void AimedActionHeld(Vector2 worldPos)
 	{
-		aimedActionOrb.OnAimedActionDown(worldPos);
+		AimedActionOrb.OnAimedActionDown(worldPos);
 	}
 
 	public void AimedActionUp(Vector2 worldPos)
 	{
-		aimedActionOrb.OnAimedActionDown(worldPos); 
+		AimedActionOrb.OnAimedActionDown(worldPos); 
 	}
 
 	public void DeleteAllOrbs(bool skipCore = false)
@@ -198,24 +198,21 @@ public class Node : BaseBehaviour
 
 			list.Add(orb);
 		}
-		if (orb is IMovementOrb) movementOrb = (IMovementOrb)orb;
-		if (orb is IActionOrb) actionOrb = (IActionOrb)orb;
-		if (orb is IAimedActionOrb) aimedActionOrb = (IAimedActionOrb)orb;
-		if (orb is Core) core = (Core)orb;
+		if (orb is IEquippable) Equip((IEquippable)orb);
 	}
 
 	public void OnDeactivateOrb(Orb orb)
 	{
 		foreach (var orbType in orb.Interfaces)
 			_activeOrbsbyType[orbType].Remove(orb);
-		if (ReferenceEquals(orb, movementOrb)) movementOrb = null;
-		if (ReferenceEquals(orb, actionOrb)) actionOrb = null;
-		if (ReferenceEquals(orb, aimedActionOrb)) aimedActionOrb = null;
+
+		if (orb is IEquippable) UnEquip((IEquippable)orb);
 		
 	}
 
 	public void AddOrbs(List<Orb> list, bool clone = false)
 	{
+		if (list == null) return;;
 		foreach (var o in list)
 		{
 			var oo = clone ? o.Clone() : o;
@@ -226,17 +223,50 @@ public class Node : BaseBehaviour
 	public void LookTowards(Vector2 v, bool immediately = false)
 	{
 		v.Normalize();
-		rotationTarget = Mathf.Atan2(v.y, v.x);
-		if (immediately) RB.rotation = rotationTarget;
+		rotationGoal = Mathf.Atan2(v.y, v.x);
+		if (immediately) RB.rotation = rotationGoal;
 	}
 
 	public void LookAt(Vector2 v, bool immediately = false) => LookTowards(v - Position, immediately);
 
-
-	[AttributeUsage(AttributeTargets.Method)]
-	public class ApplyPropsAttribute : DrawnAttribute { }
-	[ApplyPropsAttribute] public void ApplyProps()
+	public void UnEquip(IEquippable equippableOrb)
 	{
-		//Called by vexe
+		if(equippableOrb == null) return;
+		if (equippableOrb == AimedActionOrb) _aimedIndex = -1;
+		else if(equippableOrb == ActionOrb) _actionIndex = -1;
+		else if(equippableOrb == MovementOrb) _movementIndex = -1;
+		else if(ReferenceEquals(equippableOrb, core)) _coreIndex = -1;
+		else return;
+		equippableOrb.OnUnequip();
+	}
+
+	public void Equip(IEquippable equippableOrb)
+	{
+		var orb = equippableOrb as Orb;
+		int index = orbs.IndexOf(orb);
+		if (orb is IAimedActionOrb && !ReferenceEquals(orb, AimedActionOrb))
+		{
+			UnEquip(AimedActionOrb);
+			_aimedIndex = index;
+			AimedActionOrb?.OnEquip();
+		}
+		if (orb is IActionOrb && !ReferenceEquals(orb, ActionOrb))
+		{
+			UnEquip(ActionOrb);
+			_actionIndex = index;
+			ActionOrb?.OnEquip();
+		}
+		if (orb is IMovementOrb && !ReferenceEquals(orb, AimedActionOrb))
+		{
+			UnEquip(AimedActionOrb);
+			_movementIndex = index;
+			AimedActionOrb?.OnEquip();
+		}
+		if (orb is Core && !ReferenceEquals(orb, core))
+		{
+			UnEquip(core);
+			_coreIndex = index;
+			core?.OnEquip();
+		}
 	}
 }

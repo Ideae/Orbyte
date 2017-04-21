@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
-using Vexe.Runtime.Types;
 
 public abstract class Orb<T> : Orb where T : Orb<T>
 {
@@ -25,7 +24,7 @@ public abstract class Orb<T> : Orb where T : Orb<T>
 	{
 		customProperties = new List<CustomProperty>();
 		inspectableVariables = new List<FPInfo>();
-		var t = typeof(T);
+		var t = FastType<T>.type;
 		foreach (var p in t.GetProperties(BindingFlags.Instance | BindingFlags.Public))
 		{
 			var cp = p.GetCustomAttribute<CustomPropertyAttribute>();
@@ -50,7 +49,7 @@ public abstract class Orb<T> : Orb where T : Orb<T>
 		if (DefaultOrbs == null) DefaultOrbs = Resources.LoadAll("DefaultOrbs").Cast<Orb>().ToList();
 		foreach (Orb o in DefaultOrbs)
 		{
-			if (o.GetType() == typeof(T))
+			if (o.GetType() == FastType<T>.type)
 			{
 				return (T)o.Clone();
 			}
@@ -86,15 +85,15 @@ public abstract class Orb<T> : Orb where T : Orb<T>
 }
 
 
-public abstract class Orb : BaseScriptableObject, IOrbType
+public abstract class Orb : ScriptableObject, IOrbType
 {
 	[HideInInspector] public static readonly Type[] AllOrbTypes;
 	[HideInInspector] public static List<Orb> DefaultOrbs;
 
 	static Orb()
 	{
-		AllOrbTypes = typeof(IOrbType).Assembly.GetTypes()
-		                              .Where(type => type.GetInterfaces().Contains(typeof(IOrbType)) &&
+		AllOrbTypes = FastType<IOrbType>.type.Assembly.GetTypes()
+		                              .Where(type => type.GetInterfaces().Contains(FastType<IOrbType>.type) &&
 			                                     !type.IsGenericTypeDefinition)
 		                              .ToArray();
 	}
@@ -102,7 +101,7 @@ public abstract class Orb : BaseScriptableObject, IOrbType
 
 
 	[SerializeField] [HideInInspector] bool _isActive;
-	[Show]
+	[SerializedProperty(nameof(_isActive))]
 	public virtual bool IsActive
 	{
 		get { return _isActive; }

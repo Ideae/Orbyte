@@ -4,9 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEditor;
-using Vexe.Editor;
-using Vexe.Editor.Drawers;
-using Vexe.Runtime.Types;
 using Object = UnityEngine.Object;
 
 public static class EditorUtils {
@@ -40,7 +37,7 @@ public static class EditorUtils {
 		if(!confirm) return;
 		
 		Node n = (Node)command.context;
-		var orb = n.orbs.FirstOrDefault(o=> o is Core && o.IsActive);
+		var orb = n.Orbs.FirstOrDefault(o=> o is Core && o.IsActive);
 		if (orb == null)
 		{
 			Debug.LogError("Eh? There's no active core on this node!");
@@ -55,13 +52,15 @@ public static class EditorUtils {
 		Node n = (Node)command.context;
 
 		Core orb = null;
-		for (int i = 0; i < n.orbs.Count; i++)
+		// Warning:directly modifying orbs list;
+		var orbs = (List<Orb>)n.Orbs;
+		for (int i = 0; i < orbs.Count; i++)
 		{
-			var o = n.orbs[i];
+			var o = n.Orbs[i];
 			if (o is Core && o.IsActive)
 			{
 				orb = (Core)o.Clone();
-				n.orbs[i] = orb;
+				orbs[i] = orb;
 				break;
 			}
 		}
@@ -90,6 +89,8 @@ public static class EditorUtils {
 
 	}
 
+
+
 	[MenuItem("CONTEXT/Node/Serialize All Orbs")]
 	static void SerializeAllOrbs(MenuCommand command)
 	{
@@ -99,11 +100,13 @@ public static class EditorUtils {
 		var nodepath = savedNodesPath + "/"+n.name;
 		AssetDatabase.CreateFolder(nodepath, "Orbs");
 		var orbsPath = nodepath + "/Orbs";
-		for (int i = 0; i < n.orbs.Count; i++)
+		// Warning:directly modifying orbs list;
+		var orbs = (List<Orb>)n.Orbs;
+		for (int i = 0; i < orbs.Count; i++)
 		{
-			n.orbs[i] = n.orbs[i].Clone();
+			orbs[i] = n.Orbs[i].Clone();
 
-			AssetDatabase.CreateAsset(n.orbs[i], orbsPath +$"/{n.name}_{n.orbs[i].GetType().Name}.asset");
+			AssetDatabase.CreateAsset(n.Orbs[i], orbsPath +$"/{n.name}_{n.Orbs[i].GetType().Name}.asset");
 
 		}
 		PrefabUtility.CreatePrefab(nodepath+"/"+n.name + ".prefab", n.gameObject);

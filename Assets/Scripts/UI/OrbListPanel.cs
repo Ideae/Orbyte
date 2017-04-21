@@ -39,7 +39,7 @@ public class OrbListPanel : MonoBehaviour
 			var orb = c.GetComponent<OrbButton>()?.orb;
 			orbButtons.Add(orb);
 		}
-		foreach (var o in n.orbs)
+		foreach (var o in n.Orbs)
 		{
 			if (orbButtons.Contains(o)) continue;
 			var b = Instantiate(buttonPrefab, content.transform);

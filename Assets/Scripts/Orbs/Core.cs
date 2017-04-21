@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
-using Vexe.Runtime.Types;
 
 [CreateAssetMenu(menuName = "Orbs/" + nameof(Core))]
-public class Core : Orb<Core>
+public class Core : Orb<Core>, IEquippable
 {
 	const float MIN_RADIUS = 0.01f;
 
@@ -16,7 +15,7 @@ public class Core : Orb<Core>
 
 	[SerializeField] [HideInInspector] Color _mainColor = Color.white;
 
-	[Show] [CustomProperty(nameof(_mainColor))]
+	[CustomProperty(nameof(_mainColor))]
 	public Color MainColor
 	{
 		get { return _mainColor; }
@@ -32,9 +31,7 @@ public class Core : Orb<Core>
 		}
 	}
 
-
-
-	[Show]
+	
 	[CustomProperty(nameof(_Collidable))]
 	public bool Collidable
 	{
@@ -46,8 +43,7 @@ public class Core : Orb<Core>
 				Node.GetComponent<Collider2D>().enabled = value;
 		}
 	}
-
-	[Show]
+	
 	[CustomProperty(nameof(_Radius))]
 	public float Radius
 	{
@@ -64,8 +60,6 @@ public class Core : Orb<Core>
 			//if (c != null) c.radius = value;
 		}
 	}
-
-	[Show]
 	[CustomProperty(nameof(_LayerMask))]
 	public LayerMask LayerMask
 	{
@@ -84,8 +78,7 @@ public class Core : Orb<Core>
 			}
 		}
 	}
-
-	[Show]
+	
 	[CustomProperty(nameof(_Fixed))]
 	public bool Fixed
 	{

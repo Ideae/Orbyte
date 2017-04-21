@@ -21,9 +21,9 @@ public class Player : Orb<Player>, IAimedActionOrb, IAffectSelfOrb
 		{
 			var x = Input.GetAxis("Horizontal");
 			var y = Input.GetAxis("Vertical");
-			Node.MovementDirectionTarget = new Vector2(x, y);
+			Node.MovementDirection = new Vector2(x, y);
 		}
-		if (Node.MovementDirectionTarget.magnitude > .3f) Node.LookTowards(Node.MovementDirectionTarget);
+		if (Node.MovementDirection.magnitude > .3f) Node.LookTowards(Node.MovementDirection);
 	}
 	
 	public void OnAimedActionDown(Vector2 target)

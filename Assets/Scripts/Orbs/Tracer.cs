@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using Vexe.Runtime.Types;
 
 [CreateAssetMenu(menuName = "Orbs/" + nameof(Tracer))]
 public class Tracer : Orb<Tracer>
@@ -23,7 +22,7 @@ public class Tracer : Orb<Tracer>
 		}
 	}
 	[SerializeField] [HideInInspector] Color _color = Color.white;
-	[Show, CustomProperty(nameof(_color))]
+	[CustomProperty(nameof(_color))]
 	public Color Color
 	{
 		get { return _color; }
@@ -35,7 +34,7 @@ public class Tracer : Orb<Tracer>
 	}
 
 	[SerializeField] [HideInInspector] float _time;
-	[Show, CustomProperty(nameof(_time))]
+	[CustomProperty(nameof(_time))]
 	public float Time
 	{
 		get { return _time; }
@@ -47,7 +46,7 @@ public class Tracer : Orb<Tracer>
 	}
 
 	[SerializeField] [HideInInspector] float _width = 0.2f;
-	[Show, CustomProperty(nameof(_width))]
+	[CustomProperty(nameof(_width))]
 	public float Width
 	{
 		get { return _width; }

@@ -2,8 +2,13 @@
 using System.Reflection;
 using UnityEngine;
 
-[AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = true)]
-public class CustomPropertyAttribute : Attribute
+[AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = true)]
+public class SerializedPropertyAttribute : CustomPropertyAttribute {
+	public SerializedPropertyAttribute(string fieldName) : base(fieldName) {}
+}
+
+[AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = true)]
+public class CustomPropertyAttribute : PropertyAttribute
 {
 	public readonly string fieldName;
 	public CustomPropertyAttribute(string fieldName)

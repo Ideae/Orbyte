@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.UI;
-using Vexe.Runtime.Extensions;
 
 public class OrbInspector : MonoBehaviour
 {
@@ -32,20 +31,20 @@ public class OrbInspector : MonoBehaviour
 		orbText.text = this.orb.GetType().Name;
 		foreach (FPInfo fp in this.orb.InspectableVariables)
 		{
-			Type t = fp.Type;
+			Type t = fp.memberType;
 			GameObject elem = null;
-			if (t == typeof(string) || t == typeof(float) || t == typeof(int))
+			if (t == FastType<string>.type || t == FastType<float>.type || t == typeof(int))
 			{
 				elem = (GameObject)Instantiate(inputPrefab, propertiesPanel.transform);
 				InputField inputField = elem.transform.GetComponentInChildren<InputField>();
 				inputField.text = fp.GetValue(this.orb).ToString();
 				inputField.onEndEdit.AddListener((s) =>
 				{
-					if (t == typeof(string))
+					if (t == FastType<string>.type)
 					{
 						fp.SetValue(this.orb, s);
 					}
-					else if (t == typeof(float))
+					else if (t == FastType<float>.type)
 					{
 						float f = 0f;
 						if (float.TryParse(s, out f))

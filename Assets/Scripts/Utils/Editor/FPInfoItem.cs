@@ -70,7 +70,9 @@ public partial class OrbTree : TreeView
 					var writerObj = WriterObject.Get(Info.VariableType);
 					if (writerObj != null)
 					{
-						var parentobj = (parent as OrbItem).orb;
+						var parentItem = (parent as OrbItem);
+						if(parentItem == null)break;
+						var parentobj = parentItem.orb;
 						var obj = Info.GetValue(parentobj);
 						writerObj.objValue = obj;
 						writerObj.prop.serializedObject.Update();

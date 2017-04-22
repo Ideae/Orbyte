@@ -39,18 +39,31 @@ abstract class WriterObject : ScriptableObject
 		new Dictionary<Type, Func<WriterObject>>();
 
 
-	static int prettycounter = 0;
 	static string PrettyTypeName(Type t)
 	{
 		if (t.IsGenericType)
 		{
+			return string.Format(
+			                     "{0}<{1}>",
+			                     t.Name.Substring(0, t.Name.LastIndexOf("`", StringComparison.InvariantCulture)),
+			                     string.Join(", ", t.GetGenericArguments().Select(PrettyTypeName)));
+		}
 
-			prettycounter++;
+		return t.Name;
+	}
+
+	static int c = 0;
+	static string SafeTypeName(Type t)
+	{
+		if (t.IsGenericType)
+		{
+
+			c++;
 			var r = string.Format(
 				"{0}_of{1}{2}_",
 				t.Name.Substring(0, t.Name.LastIndexOf("`", StringComparison.InvariantCulture)),
-				string.Join(", ", t.GetGenericArguments().Select(PrettyTypeName)),prettycounter);
-			prettycounter--;
+				string.Join(", ", t.GetGenericArguments().Select(PrettyTypeName)),c);
+			c--;
 			return r;
 		}
 		if (t.IsArray)
@@ -67,15 +80,13 @@ abstract class WriterObject : ScriptableObject
 
 			if (objCache.ContainsKey(type)) return objCache[type];
 
-			var fieldname = "_" + PrettyTypeName(type);
+			var fieldname = "_" + SafeTypeName(type);
 			var classname = "_" + fieldname;
-
+			var typename = PrettyTypeName(type);
 			var t = Type.GetType(classname);
 
 			if (t != null)
 			{
-				//RuntimeHelpers.RunClassConstructor(t.TypeHandle);
-
 				t.BaseType.GetMethod("AddToCache", BindingFlags.Static | BindingFlags.Public).Invoke(null, null);
 				//t.TypeInitializer?.Invoke(null);
 				var obj = funcCache[type]();
@@ -88,7 +99,7 @@ abstract class WriterObject : ScriptableObject
 			var lines = new[]
 			{
 				"class # : WriterObject<*, #> { public * %; public override * value { get { return %; } set { % = value; } } }"
-					.Replace("*", type.Name).Replace("#", classname).Replace("%", fieldname),
+					.Replace("*", typename).Replace("#", classname).Replace("%", fieldname),
 				""
 			};
 			File.AppendAllLines(outputPath, lines);
@@ -130,4 +141,13 @@ class __Single : WriterObject<Single, __Single> { public Single _Single; public 
 class __Node : WriterObject<Node, __Node> { public Node _Node; public override Node value { get { return _Node; } set { _Node = value; } } }
 
 class __String_A_ : WriterObject<String[], __String_A_> { public String[] _String_A_; public override String[] value { get { return _String_A_; } set { _String_A_ = value; } } }
+
+
+class __IReadOnlyList_ofOrb1_ : WriterObject<IReadOnlyList<Orb>, __IReadOnlyList_ofOrb1_> { public IReadOnlyList<Orb> _IReadOnlyList_ofOrb1_; public override IReadOnlyList<Orb> value { get { return _IReadOnlyList_ofOrb1_; } set { _IReadOnlyList_ofOrb1_ = value; } } }
+
+class __List_ofOrb1_ : WriterObject<List<Orb>, __List_ofOrb1_> { public List<Orb> _List_ofOrb1_; public override List<Orb> value { get { return _List_ofOrb1_; } set { _List_ofOrb1_ = value; } } }
+
+class __Color : WriterObject<Color, __Color> { public Color _Color; public override Color value { get { return _Color; } set { _Color = value; } } }
+
+class __Material : WriterObject<Material, __Material> { public Material _Material; public override Material value { get { return _Material; } set { _Material = value; } } }
 

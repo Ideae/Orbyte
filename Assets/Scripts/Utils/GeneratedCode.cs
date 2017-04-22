@@ -46,12 +46,16 @@ public static IList Create(Type t) => dict[t]();
 
 static OrbLists()
 {
+dict[typeof(Tracer)] = ()=> new List< Tracer>();
+dict[typeof(Watch)] = ()=> new List< Watch>();
 dict[typeof(Gravity)] = ()=> new List< Gravity>();
 dict[typeof(Core)] = ()=> new List< Core>();
 dict[typeof(ForceMove)] = ()=> new List< ForceMove>();
 dict[typeof(Shooter)] = ()=> new List< Shooter>();
 dict[typeof(HueShifter)] = ()=> new List< HueShifter>();
+dict[typeof(Lifetime)] = ()=> new List< Lifetime>();
 dict[typeof(Orb)] = ()=> new List< Orb>();
+dict[typeof(IEquippable)] = ()=> new List< IEquippable>();
 dict[typeof(IDrawOrb)] = ()=> new List< IDrawOrb>();
 dict[typeof(IAffectSelfOrb)] = ()=> new List< IAffectSelfOrb>();
 dict[typeof(IAffectOtherOrb)] = ()=> new List< IAffectOtherOrb>();
@@ -62,9 +66,6 @@ dict[typeof(IActionOrb)] = ()=> new List< IActionOrb>();
 dict[typeof(IMovementOrb)] = ()=> new List< IMovementOrb>();
 dict[typeof(Bomb)] = ()=> new List< Bomb>();
 dict[typeof(Player)] = ()=> new List< Player>();
-dict[typeof(Lifetime)] = ()=> new List< Lifetime>();
-dict[typeof(Watch)] = ()=> new List< Watch>();
-dict[typeof(Tracer)] = ()=> new List< Tracer>();
 
 }
 }

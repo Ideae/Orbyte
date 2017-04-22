@@ -124,6 +124,7 @@ public abstract class Orb : ScriptableObject, IOrbType
 	}
 
 	[NonSerialized] public Node _node;
+
 	[HideInInspector]
 	public Node Node => _node;
 

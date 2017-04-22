@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 [CreateAssetMenu(menuName = "Orbs/" + nameof(Player))]
 public class Player : Orb<Player>, IAimedActionOrb, IAffectSelfOrb
@@ -9,6 +10,8 @@ public class Player : Orb<Player>, IAimedActionOrb, IAffectSelfOrb
 		get { return true; }
 		set { }
 	}
+
+	public String[] ss;
 	
 	public void AffectSelf()
 	{

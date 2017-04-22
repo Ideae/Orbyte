@@ -31,7 +31,7 @@ public class OrbInspector : MonoBehaviour
 		orbText.text = this.orb.GetType().Name;
 		foreach (FPInfo fp in this.orb.InspectableVariables)
 		{
-			Type t = fp.memberType;
+			Type t = fp.VariableType;
 			GameObject elem = null;
 			if (t == FastType<string>.type || t == FastType<float>.type || t == typeof(int))
 			{

@@ -18,7 +18,7 @@ public struct FPInfo
 
 	public string Name => memberInfo.Name;
 
-	public Type memberType =>
+	public Type VariableType =>
 		(memberInfo as PropertyInfo)?.PropertyType ??
 		(memberInfo as FieldInfo)?.FieldType;
 

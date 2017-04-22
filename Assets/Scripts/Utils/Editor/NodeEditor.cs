@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using static UnityEditor.EditorGUIUtility;
@@ -22,56 +21,74 @@ class NodeEditor :Editor
 		new Column
 		{
 			allowToggleVisibility = true,
+			contextMenuText = "Icon",
+			maxWidth = 20,
+			width = 20,
+			minWidth = 20,
+			autoResize = false,
+
+		},
+
+		new Column
+		{
+			allowToggleVisibility = false,
+			contextMenuText = "Equip",
+			headerContent = new GUIContent("Equip"),
+			maxWidth = 20,
+			width = 20,
+			minWidth = 20,
+			autoResize = false,
+
+		},
+
+		new Column
+		{
+			allowToggleVisibility = false,
 			autoResize = true,
-			canSort = false,
-			contextMenuText = "CMenu",
-			headerContent = new GUIContent("wot"),
-			headerTextAlignment = TextAlignment.Right,
-			maxWidth = 100,
-			minWidth = 0,
-			sortedAscending = false
+			contextMenuText = "Elements",
+			headerContent = new GUIContent("Elements"), 
 		},
 
 		new Column
 		{
 			allowToggleVisibility = true,
-			autoResize = true,
-			canSort = false,
-			contextMenuText = "CMenuss",
-			headerContent = new GUIContent("woasdat"),
-			headerTextAlignment = TextAlignment.Right,
-			sortedAscending = false
+			autoResize = true, 
+			contextMenuText = "Values",
+			headerContent = new GUIContent("Values"),  
 		},
 	};
 
 	public void OnEnable()
 	{ 
-		if (state == null) state = new TreeViewState();
-		if (mchState == null) mchState = new MultiColumnHeaderState(columns); 
-		multiColumnHeader = new MultiColumnHeader(mchState);
-		orbTree = new OrbTree(state,multiColumnHeader, serializedObject.targetObject as Node);
+		Setup(true);
 	}
 
-	void ResetState()
+	void Setup(bool keepState)
 	{
-		state = new TreeViewState();
-		mchState = new MultiColumnHeaderState(columns);
-		multiColumnHeader = new MultiColumnHeader(mchState);
+		if (state == null || !keepState) state = new TreeViewState();
+		if (mchState == null || !keepState) mchState = new MultiColumnHeaderState(columns);
+		multiColumnHeader = new MultiColumnHeader(mchState)
+		{
+			canSort = false
+		};
 		orbTree = new OrbTree(state, multiColumnHeader, serializedObject.targetObject as Node);
 	}
 	public override void OnInspectorGUI()
 	{
+		
 		//serializedObject.Update(); 
 		//Node n = serializedObject.targetObject as Node;
 		var text = new GUIContent("Reset editor");
 		bool butt = GUI.Button(GetRect(text, GUIStyle.none), text);
-		if (butt) ResetState();
-		
+		if (butt) Setup(false);
 
 		DrawDefaultInspector(); 
 
 		var width = currentViewWidth - 40;
 		var rect = GetRect(width, HEIGHT);
+
+		
+		multiColumnHeader.ResizeToFit();
 		orbTree.OnGUI(rect);
 		//serializedObject.ApplyModifiedProperties();
 

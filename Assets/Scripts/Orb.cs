@@ -108,17 +108,15 @@ public abstract class Orb : ScriptableObject, IOrbType
 		set
 		{
 			if (_isActive == value) return;
+			_isActive = value;
+			if((Node == null) || !Application.isPlaying) return;
 			if (value)
 			{
-				_isActive = true;
-				if (Node == null) return;
 				OnActivate();
 				Node.OnActivateOrb(this);
 			}
 			else
 			{
-				_isActive = false;
-				if (Node == null) return;
 				OnDeactivate();
 				Node.OnDeactivateOrb(this);
 			}
@@ -155,7 +153,7 @@ public abstract class Orb : ScriptableObject, IOrbType
 		if (this is IEquippable)
 		{
 			IEquippable ie = (IEquippable)this;
-			ie.SetEquipped();
+			ie.SetEquipped(true);
 		}
 	}
 }

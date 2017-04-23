@@ -4,13 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-[Flags] public enum OrbState
-{
-	None,
-	Active,
-	Equiped,
-	Locked,
-}
 public class Node : MonoBehaviour
 {
 	[NonSerialized] public Room room;

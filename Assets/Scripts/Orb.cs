@@ -157,5 +157,10 @@ public abstract class Orb : ScriptableObject, IOrbType
 			ie.SetEquipped(true);
 		}
 	}
+
+	public void OnStateChanged(OrbList.EventArgs args)
+	{
+		throw new NotImplementedException();
+	}
 }
 

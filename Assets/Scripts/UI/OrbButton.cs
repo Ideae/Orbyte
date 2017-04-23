@@ -16,7 +16,7 @@ public class OrbButton : MonoBehaviour, IPointerClickHandler
 	{
 		orb = _orb;
 		var text = GetComponentInChildren<Text>();
-		text.text = _orb.Name;
+		text.text = _orb.OrbName;
 	}
 
 	public void OnClick()

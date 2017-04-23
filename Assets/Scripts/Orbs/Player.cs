@@ -39,7 +39,7 @@ public class Player : Orb<Player>, IAimedActionOrb, IAffectSelfOrb
 
 	public void OnAimedActionUp(Vector2 target) {}
 
-	public override void OnAttach()
+	protected override void OnAttach()
 	{
 		UIManager.Instance.RegisterPlayer(this);
 	}

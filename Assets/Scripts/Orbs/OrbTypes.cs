@@ -5,11 +5,8 @@ public interface IOrbType
 	Node Node { get; }
 }
 
-public interface IEquippable : IOrbType
-{
-	void OnEquip();
-	void OnUnequip();
-}
+public interface IEquippable {}
+
 public interface IDrawOrb : IOrbType
 {
 	void Draw();
@@ -56,21 +53,23 @@ public interface IMovementOrb : IEquippable
 	bool ReachedPositionTarget(Vector2 target);
 }
 
-public static partial class Utils
-{
-	public static bool IsEquipped(this IEquippable equippableOrb)
-	{
-		Orb o = equippableOrb as Orb;
-		if (o?.Node == null) return false;
-		return (o.Node.AimedActionOrb == equippableOrb) 
-			|| (o.Node.ActionOrb == equippableOrb) 
-			|| (o.Node.MovementOrb == equippableOrb);
-	}
-
-	public static void SetEquipped(this IEquippable orb, bool equip)
-	{
-		if (equip) orb?.Node.Equip(orb);
-		else orb?.Node.UnEquip(orb);
-		
-	}
-}
+//public static partial class Utils
+//{
+//	public static bool IsEquipped(this IEquippable orb, OrbState equipSlot)
+//	{
+//		Orb o = orb as Orb;
+//		if (o?.Node == null) return false;
+//		var i = o.Node.Orbs.IndexOf(o);
+//		return o.Node.Orbs.IsEquipped(i, equipSlot);
+//	}
+//
+//	public static void SetEquipped(this IEquippable orb, OrbState equipSlot, bool equip)
+//	{
+//
+//		Orb o = orb as Orb;
+//		if (o?.Node == null) return;
+//		var i = o.Node.Orbs.IndexOf(o);
+//		return o.Node.Orbs.SetEquipped<>(i, equipSlot);
+//
+//	}
+//}

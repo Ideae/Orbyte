@@ -49,13 +49,15 @@ public partial class OrbTree : TreeView
 					break;
 				case 1:	
 					var eq = orb as IEquippable;
-					if ((eq == null) || (depth != 0)) break;
-					var oldEquip = eq.IsEquipped();
+					var orblist = (parent as OrbListItem)?.list;
+					if ((eq == null) || (depth != 0) || (orblist == null) ) break;
+					var index = orblist.IndexOf(orb);
+					var oldEquip = orblist.IsEquipped(index);
 
 					var toggleRect = cellRect;
 					toggleRect.width = ToggleWidth;
 					var equip = EditorGUI.Toggle(cellRect, oldEquip);
-					if (oldEquip != equip) eq.SetEquipped(equip);
+					if (oldEquip != equip) orblist.SetEquipped(orb.EquipSlots,index,equip);
 					break;
 
 				case 2:
@@ -90,7 +92,7 @@ public partial class OrbTree : TreeView
 						{
 							var newOrb = writerObj.value;
 							Undo.RecordObject(orb.Node, $"Swap {orb.name} for {newOrb.name} on {orb._node.name}");
-							var orblist = (List<Orb>)orb._node.Orbs;
+							orblist = orb._node.Orbs;
 							var i = orblist.IndexOf(orb);
 							if (!Application.isPlaying)
 							{
@@ -102,8 +104,7 @@ public partial class OrbTree : TreeView
 							}
 							else
 							{
-								orb._node.RemoveOrb(orb);
-								orb._node.AddOrb(newOrb.Clone(), i);
+								orb._node.Orbs[i] = newOrb.Clone();
 							}
 						}
 					}

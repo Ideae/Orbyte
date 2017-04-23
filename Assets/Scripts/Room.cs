@@ -28,14 +28,14 @@ public class Room : MonoBehaviour
 			DeleteAllNodes();
 	}
 
-	public Node SpawnNode(Vector2 pos, List<Orb> orbs = null, bool cloneOrbs = false)
+	public Node SpawnNode(Vector2 pos, OrbList orbs = null, bool cloneOrbs = false)
 	{
 		var node = Instantiate(NodePrefab, SceneNodes.transform);
 
 		node.room = this;
 		node.transform.position = new Vector3(pos.x, pos.y, gameObject.transform.position.z);
 		if (orbs != null)
-			node.AddOrbs(orbs, cloneOrbs);
+			node.Orbs.AddAll(orbs, cloneOrbs);
 		nodes.Add(node);
 		return node;
 	}
@@ -45,7 +45,7 @@ public class Room : MonoBehaviour
 		for (var i = 0; i < nodes.Count; i++)
 		{ 
 			var n = nodes[i];
-			if (n.GetOrb<Player>() != null) continue;
+			if (n.Orbs.Get<Player>() != null) continue;
 			n.DeleteNode();
 			nodes.RemoveAt(i);
 			i--;

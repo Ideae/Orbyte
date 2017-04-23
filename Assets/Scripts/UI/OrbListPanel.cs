@@ -11,26 +11,23 @@ public class OrbListPanel : MonoBehaviour
 	public void SetNode(Node n)
 	{
 		gameObject.SetActive(n != null);
-		if (node != n)
-		{
-			foreach (var orbButton in content.transform.Children())
-				Destroy(orbButton.gameObject);
-			if (n != null)
-				n.OnOrbsChanged -= UpdateButtonList;
-			node = n;
-			if (node != null)
-			{
-				node.OnOrbsChanged += UpdateButtonList;
-				UpdateButtonList(node);
-			}
-		}
+		if (node == n) return;
+		foreach (var orbButton in content.transform.Children())
+			Destroy(orbButton.gameObject);
+		if (n != null)
+			n.Orbs.OnOrbsChanged -= OnOrbsChanged;
+		node = n;
+		if (node == null) return;
+		node.Orbs.OnOrbsChanged += OnOrbsChanged;
+		UpdateButtonList();
 	}
 
 
 	// Update is called once per frame
 	public void Update() {}
 
-	public void UpdateButtonList(Node n)
+	public void OnOrbsChanged(OrbList.EventArgs o) => UpdateButtonList();
+	public void UpdateButtonList()
 	{
 		orbButtons.Clear();
 		for (var i = 0; i < content.transform.childCount; i++)
@@ -39,7 +36,7 @@ public class OrbListPanel : MonoBehaviour
 			var orb = c.GetComponent<OrbButton>()?.orb;
 			orbButtons.Add(orb);
 		}
-		foreach (var o in n.Orbs)
+		foreach (var o in node.Orbs)
 		{
 			if (orbButtons.Contains(o)) continue;
 			var b = Instantiate(buttonPrefab, content.transform);

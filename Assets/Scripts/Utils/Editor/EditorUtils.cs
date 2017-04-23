@@ -53,7 +53,7 @@ public static class EditorUtils {
 
 		Core orb = null;
 		// Warning:directly modifying orbs list;
-		var orbs = (List<Orb>)n.Orbs;
+		var orbs = n.Orbs;
 		for (int i = 0; i < orbs.Count; i++)
 		{
 			var o = n.Orbs[i];
@@ -101,7 +101,7 @@ public static class EditorUtils {
 		AssetDatabase.CreateFolder(nodepath, "Orbs");
 		var orbsPath = nodepath + "/Orbs";
 		// Warning:directly modifying orbs list;
-		var orbs = (List<Orb>)n.Orbs;
+		var orbs = n.Orbs;
 		for (int i = 0; i < orbs.Count; i++)
 		{
 			orbs[i] = n.Orbs[i].Clone();

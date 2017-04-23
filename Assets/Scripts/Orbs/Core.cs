@@ -102,7 +102,7 @@ public class Core : Orb<Core>, IEquippable
 		}
 	}
 
-	public override void OnActivate()
+	protected override void OnActivate()
 	{
 		Collidable = _Collidable;
 		Radius = _Radius;

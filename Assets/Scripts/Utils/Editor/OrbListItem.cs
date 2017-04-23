@@ -10,7 +10,7 @@ public partial class OrbTree : TreeView
 		static Texture2D defaultIcon;
 		public readonly object owner;
 		static Texture2D DefaultIcon => defaultIcon ?? (defaultIcon = FindTexture("UnityEditor.HierarchyWindow"));
-		public List<Orb> list => Info.GetValue(owner) as List<Orb>;
+		public OrbList list => Info.GetValue(owner) as OrbList;
 
 		public override bool hasChildren => true;
 

@@ -49,18 +49,18 @@ public class Tracer : Orb<Tracer>
 		}
 	}
 
-	public override void OnAttach()
+	protected override void OnAttach()
 	{
 		if (TR == null) Node.gameObject.AddComponent<TrailRenderer>();
 		
 	}
 
-	public override void OnDetach()
+	protected override void OnDetach()
 	{
 		if(TR!= null) Destroy(TR);
 	}
 
-	public override void OnActivate()
+	protected override void OnActivate()
 	{
 		TR.startColor = _color;
 		TR.endColor = new Color(0,0,0,0);
@@ -70,7 +70,7 @@ public class Tracer : Orb<Tracer>
 
 	}
 
-	public override void OnDeactivate()
+	protected override void OnDeactivate()
 	{
 		var tr = Node.GetComponent<TrailRenderer>();
 		if (tr != null)

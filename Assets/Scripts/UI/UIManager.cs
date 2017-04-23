@@ -79,14 +79,14 @@ public class UIManager : Singleton<UIManager>
 	public void OnOrbRemoved(ReorderableList.ReorderableListEventStruct args)
 	{
 		var removedOrb = args.SourceObject.GetComponent<OrbButton>().orb;
-		removedOrb.Node.RemoveOrb(removedOrb);
+		removedOrb.Node.Orbs.Remove(removedOrb);
 	}
 
 	public void OnOrbAdded(ReorderableList.ReorderableListEventStruct args)
 	{
 		var removedOrb = args.SourceObject.GetComponent<OrbButton>().orb;
 		var targetList = args.ToList?.GetComponentInParent<OrbListPanel>();
-		if (targetList != null) targetList.node.AddOrb(removedOrb, args.ToIndex);
+		if (targetList != null) targetList.node.Orbs.Insert(args.ToIndex, removedOrb);
 	}
 
 	public void RegisterRoom(Room room)

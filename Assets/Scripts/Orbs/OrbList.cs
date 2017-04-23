@@ -2,6 +2,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
+
+
+[Flags]
+public enum EquipSlot
+{
+	Core = 16,
+	Movement = 32,
+	Action = 64,
+	AimedAction = 128,
+}
 
 [Flags]
 public enum OrbState
@@ -10,10 +21,11 @@ public enum OrbState
 	Active = 1,
 	Locked = 2,
 	Reserved = 4,
-	EqCore = 8,
-	EqMovement = 16,
-	EqAction = 32,
-	EqAimedAction = 64
+	Reserved2 = 8,
+	EqCore = EquipSlot.Core,
+	EqMovement = EquipSlot.Movement,
+	EqAction = EquipSlot.Action,
+	EqAimedAction = EquipSlot.AimedAction
 }
 
 [Serializable]
@@ -21,7 +33,7 @@ public class OrbList : IList<Orb>
 {
 	public enum Event
 	{
-		Removed,
+		Removed,//Default event
 		Added,
 		Equipped,
 		UnEquipped,
@@ -31,18 +43,24 @@ public class OrbList : IList<Orb>
 		Deactivated
 	}
 	
-	public static readonly Type[] equipTypes =
+	public static readonly Type[] EquipTypes =
 		{typeof(Core), typeof(IMovementOrb), typeof(IActionOrb), typeof(IAimedActionOrb)};
 
-	public static readonly OrbState[] equipStates =
-		{OrbState.EqCore, OrbState.EqMovement, OrbState.EqAction, OrbState.EqAimedAction};
+	public static readonly EquipSlot[] EquipSlots = (EquipSlot[])Enum.GetValues(FastType<EquipSlot>.type);
 
-	readonly int[] equipIndices = {-1, -1, -1, -1};
+	readonly int[] _equipIndices = {-1, -1, -1, -1};
 
-	public List<Orb> items; 
-	public List<OrbState> states; 
+	int integrityCheck;
+	public List<Orb> items;
+	public List<OrbState> states;
+
 	public event Action<EventArgs> OnOrbsChanged;
 
+	public Core				Core			=> _equipIndices[0] == -1 ? null : items[_equipIndices[0]] as Core;
+	public IMovementOrb		MovementOrb		=> _equipIndices[1] == -1 ? null : items[_equipIndices[1]] as IMovementOrb;
+	public IActionOrb		ActionOrb		=> _equipIndices[2] == -1 ? null : items[_equipIndices[2]] as IActionOrb;
+	public IAimedActionOrb	AimedActionOrb	=> _equipIndices[3] == -1 ? null : items[_equipIndices[3]] as IAimedActionOrb;
+	
 	public Orb this[int index]
 	{
 		get { return items[index]; }
@@ -51,17 +69,19 @@ public class OrbList : IList<Orb>
 
 	void FireEvent(Event e, OrbState s, Orb item, int index)
 	{
+		integrityCheck = Random.Range(int.MinValue, int.MaxValue);
 		var args = new EventArgs { eventType = e, state = s, orb = item, index = index };
 		item.OnStateChanged(args);
 		OnOrbsChanged?.Invoke(args);
 	}
+
 	void FireEvent(Event e, int index) => FireEvent(e, states[index], items[index], index);
 
 	IEnumerator IEnumerable.GetEnumerator() => items.GetEnumerator(); //#unperf
 
 	IEnumerator<Orb> IEnumerable<Orb>.GetEnumerator() => items.GetEnumerator(); //#unperf
 
-	public void Add(Orb item) => Add(item, OrbState.None, false);
+	public void Add(Orb item) => Add(item, OrbState.None);
 
 	public void Clear()
 	{
@@ -108,9 +128,14 @@ public class OrbList : IList<Orb>
 		items.RemoveAt(index);
 		states.RemoveAt(index);
 		FireEvent(Event.Removed, state, orb, index);
+
+		for (var j = 0; j < _equipIndices.Length; j++)
+		{
+			if (_equipIndices[j] >= index) _equipIndices[j]--;
+		}
 	} 
 
-	public void Add(Orb item, OrbState state, bool overwriteEquip)
+	public void Add(Orb item, OrbState state, bool overwriteEquip = false)
 	{
 		states.Add(OrbState.None);
 		items.Add(item);
@@ -119,7 +144,7 @@ public class OrbList : IList<Orb>
 		SetState(state, index, overwriteEquip);
 	}
 
-	public void SetActiveAt(int index, bool value)
+	public void SetActive(int index, bool value)
 	{
 		var oldstate = states[index];
 		if (value)
@@ -145,7 +170,7 @@ public class OrbList : IList<Orb>
 
 	void SetFlag(int index, OrbState flag, bool value, bool overwriteEquip = false)
 	{
-		var eqNum = Array.IndexOf(equipStates, flag);
+		var eqNum = Array.IndexOf(EquipSlots, flag);
 		if (eqNum != -1)
 		{
 			SetEquipped(index, eqNum, true, overwriteEquip);
@@ -154,7 +179,7 @@ public class OrbList : IList<Orb>
 		switch (flag)
 		{
 			case OrbState.Active:
-				SetActiveAt(index, value);
+				SetActive(index, value);
 				break;
 			case OrbState.Locked:
 				SetLockedAt(index, value);
@@ -185,35 +210,38 @@ public class OrbList : IList<Orb>
 		states.Insert(index, state);
 		FireEvent(Event.Added, state, item, index);
 		SetState(state, index, overwriteEquipment);
+
+		for (var j = 0; j < _equipIndices.Length; j++)
+		{
+			if (_equipIndices[j] > index) _equipIndices[j]++;
+		}
 	}
 
 	public void UnEquip(int index)
 	{
-		for (int i = 0; i < equipStates.Length; i++)
+		for (int i = 0; i < EquipSlots.Length; i++)
 		{
 			SetEquipped(index,i,false,false);
 		}
 	}
 
-	// T should be a type associated with an equip slot
-	public void SetEquipped<T>(Orb orb, bool equipped) where T : IEquippable
-	{
-		if (!(orb is T)) throw new ArgumentException("Orb doesn't match type");
-		SetEquipped<T>(IndexOf(orb), equipped);
-	}
+	public bool IsEquipped(int index) => Array.IndexOf(_equipIndices, index) != -1;
 
-	public void SetEquipped<T>(int index, bool equipped) where T : IEquippable
+	public bool IsEquipped(EquipSlot slot, int index) => (states[index] & (OrbState)slot) == (OrbState)slot;
+
+	public void SetEquipped(EquipSlot slot, int index, bool equipped)
 	{
-		var type = FastType<T>.type;
-		var eqNum = Array.IndexOf(equipTypes, type);
-		if (eqNum == -1) throw new ArgumentException("Type is not an equip slot");
+
+		var eqNum = Array.IndexOf(EquipSlots, slot);
+		var type = EquipTypes[eqNum];
+		if (!type.IsInstanceOfType(items[index])) throw new ArgumentException("Orb doesn't match type");
 		SetEquipped(index, eqNum, equipped, true);
 	}
-
+	
 	void SetEquipped(int index, int eqNum, bool equipped, bool overwrite)
 	{
-		var state = equipStates[eqNum];
-		var oldIndex = equipIndices[eqNum];
+		var state = EquipSlots[eqNum];
+		var oldIndex = _equipIndices[eqNum];
 		if (oldIndex == -1)
 		{
 			if (equipped == false) return; // There is no orb equipped in that slot;
@@ -224,16 +252,37 @@ public class OrbList : IList<Orb>
 			if ((oldIndex == index) && equipped) return; //Orb at index is already equipped
 			if ((oldIndex != index) && !overwrite) return;
 			Debug.Assert(states[oldIndex].HasFlag(state));
-			states[oldIndex] &= ~state;
-			equipIndices[eqNum] = -1;
+			states[oldIndex] &= (OrbState)~state;
+			_equipIndices[eqNum] = -1;
 			FireEvent(Event.UnEquipped, states[oldIndex], items[oldIndex], oldIndex);
 			if (oldIndex == index) return; // Previous orb was the one we wanted to unequip.
 		}
-		states[index] |= state;
-		equipIndices[eqNum] = index;
+		states[index] |= (OrbState)state;
+		_equipIndices[eqNum] = index;
 		FireEvent(Event.Equipped, states[index], items[index], index);
 
 	}
+	public void InstantiateAll(Node node)
+	{
+		for (var index = 0; index < items.Count; index++)
+		{
+			items[index] = items[index].Clone();
+			items[index]._node = node;
+			SetState(states[index], index, true);
+		}
+	}
+
+	public void AddAll(OrbList orbs, bool cloneOrbs, bool overwriteEquip = false)
+	{
+		for (var i = 0; i < orbs.Count; i++)
+		{
+			Add(cloneOrbs ? orbs[i].Clone() : orbs[i], orbs.states[i], overwriteEquip);
+		}
+	}
+
+	public bool IsLocked(int index) => (states[index] & OrbState.Locked) == OrbState.Locked;
+	public bool IsActive(int index) => (states[index] & OrbState.Active) == OrbState.Active;
+
 
 	public struct EventArgs
 	{
@@ -241,5 +290,71 @@ public class OrbList : IList<Orb>
 		public OrbState state;
 		public Orb orb;
 		public int index;
+	}
+
+	public T Get<T>(bool active = false) where T : class 
+	{
+		foreach (var orb in GetAll<T>(active))
+		{
+			return orb;
+		}
+		return null;
+	}
+
+	public TypeEnumerator<T> GetAll<T>(bool activeOnly = false) where T : class
+	{
+		return new TypeEnumerator<T>(this, activeOnly);
+	}
+
+	public TypeEnumerator<Orb> AllActiveOrbs => GetAll<Orb>(true);
+
+
+	public struct TypeEnumerator<T> : IEnumerable<T>, IEnumerator<T> where T : class
+	{
+		int listCheck;
+		private int index;
+		private readonly OrbList list;
+		private readonly bool activeOnly;
+		public IEnumerator<T> GetEnumerator() => this; 
+		IEnumerator IEnumerable.GetEnumerator() => this;
+
+		public TypeEnumerator(OrbList list, bool activeOnly)
+		{
+			this.index = 0;
+			this.list = list;
+			listCheck = list.integrityCheck;
+			this.activeOnly = activeOnly;
+		}
+
+		public void Dispose(){}
+
+		public bool MoveNext()
+		{
+			if (listCheck != list.integrityCheck) throw new Exception("Collection Was Modified During iteration");
+			index++;
+			for (; index < list.Count; index++)
+			{
+				if (list[index] is T && (!activeOnly || list[index].IsActive)) return true;
+			}
+			return false;
+
+		}
+
+		public void Reset()
+		{
+			index = 0;
+			listCheck = list.integrityCheck;
+		}
+
+		public T Current
+		{
+			get
+			{
+				if (listCheck != list.integrityCheck) throw new Exception("Collection Was Modified During iteration");
+				return list[index] as T;
+			}
+		}
+
+		object IEnumerator.Current => Current;
 	}
 }

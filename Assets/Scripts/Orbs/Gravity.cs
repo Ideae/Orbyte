@@ -23,12 +23,12 @@ public class Gravity : Orb<Gravity>, IFixedAffectOther, IDrawOrb
 		}
 	}
 
-	public override void OnAttach()
+	protected override void OnAttach()
 	{
 		Node.MR.material.SetFloat("_Gravity", 1);
 	}
 
-	public override void OnDetach()
+	protected override void OnDetach()
 	{
 		Node.MR.material.SetFloat("_Gravity", 0);
 	}

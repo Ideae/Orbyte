@@ -25,7 +25,7 @@ public class Core : Orb<Core>, IEquippable
 
 			if (Node != null)
 			{
-				Material material = Application.isEditor && !Application.isPlaying ? _node.GetComponent<MeshRenderer>().sharedMaterial : Node.MR.material;
+				Material material = Application.isEditor && !Application.isPlaying ? Node.GetComponent<MeshRenderer>().sharedMaterial : Node.MR.material;
 				material.color = value;
 			}
 		}

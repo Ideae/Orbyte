@@ -37,7 +37,10 @@ public abstract class Orb<T> : Orb where T : Orb<T>
 			if (f.GetCustomAttribute<HideInInspector>() != null) continue;
 			inspectableVariables.Add(new FPInfo(f));
 		}
+		//All types assignable from T
 		var subtypes = AllOrbTypes.Where(i => i.IsAssignableFrom(type)).ToArray();
+		//This sets _equipSlots to a flag where all the bits are set which represent the slots that this Orb can be equipped to.
+		//This is determined by the Interfaces that this type implements.
 		_equipSlots = OrbList.EquipTypes.Select((t, i) => new {t, i})
 		                     .Where(a => subtypes.Contains(a.t))
 		                     .Select(a => OrbList.EquipSlots[a.i])
@@ -85,7 +88,12 @@ public abstract class Orb : ScriptableObject, IOrbType
 		get
 		{
 			if (Node == null) return -1;
-			return Node.Orbs[_cachedIndex] == this ? _cachedIndex : (_cachedIndex = Node.Orbs.IndexOf(this));
+			
+			if ((_cachedIndex>=0) && (_cachedIndex<Node.Orbs.Count) && (Node.Orbs[_cachedIndex] != this))
+			{
+				_cachedIndex = Node.Orbs.IndexOf(this);
+			}
+			return _cachedIndex;
 		}
 	}
 

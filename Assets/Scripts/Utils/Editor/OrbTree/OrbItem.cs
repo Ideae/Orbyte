@@ -98,7 +98,7 @@ public partial class OrbTree : TreeView
 							{
 								orblist[i] = newOrb;
 								if(newOrb!= null) newOrb._node = orb?._node;
-								orb._node = null;
+								if(orb!=null)orb._node = null;
 								this.children.Clear();
 
 							}

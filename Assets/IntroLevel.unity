@@ -841,6 +841,18 @@ Prefab:
       propertyPath: m_Layer
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4561364194871702, guid: 5b50e9551b463644f9f4ced830be24c3, type: 2}
+      propertyPath: m_LocalScale.x
+      value: 1.7999998
+      objectReference: {fileID: 0}
+    - target: {fileID: 4561364194871702, guid: 5b50e9551b463644f9f4ced830be24c3, type: 2}
+      propertyPath: m_LocalScale.y
+      value: 1.7999998
+      objectReference: {fileID: 0}
+    - target: {fileID: 4561364194871702, guid: 5b50e9551b463644f9f4ced830be24c3, type: 2}
+      propertyPath: m_LocalScale.z
+      value: 1.7999998
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5b50e9551b463644f9f4ced830be24c3, type: 2}
   m_IsPrefabParent: 0
@@ -1216,6 +1228,38 @@ Transform:
   m_Father: {fileID: 1622909363}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!21 &1432151515
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: McginleyMat (Instance)
+  m_Shader: {fileID: 4800000, guid: d611be440c6ab094a9eec47e40de40f7, type: 3}
+  m_ShaderKeywords: _GRAVITY_ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _Frequency: 1
+    - _Glossiness: 0.5
+    - _Gravity: 1
+    - _Metallic: 0
+    - _Threshold: 0.7
+    - _Wavelength: 20
+    m_Colors:
+    - _Color: {r: 0.32941177, g: 0.38431376, b: 0.41176474, a: 1}
+    - _SeconaryColor: {r: 1, g: 0, b: 0.8068962, a: 1}
+    - _SecondaryColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!1001 &1506612936
 Prefab:
   m_ObjectHideFlags: 0
@@ -1254,6 +1298,16 @@ Prefab:
     - target: {fileID: 4862184329010324, guid: 3d9b844f29277ad489de8eb12c9ccc86, type: 2}
       propertyPath: m_RootOrder
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 23190013314729606, guid: 3d9b844f29277ad489de8eb12c9ccc86,
+        type: 2}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 1432151515}
+    - target: {fileID: 114843579472707432, guid: 3d9b844f29277ad489de8eb12c9ccc86,
+        type: 2}
+      propertyPath: Orbs.owner
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3d9b844f29277ad489de8eb12c9ccc86, type: 2}

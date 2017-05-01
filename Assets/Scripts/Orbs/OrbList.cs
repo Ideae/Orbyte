@@ -31,6 +31,7 @@ public enum OrbState
 [Serializable]
 public class OrbList : IList<Orb>
 {
+
 	public enum Event
 	{
 		Removed,//Default event
@@ -50,9 +51,20 @@ public class OrbList : IList<Orb>
 
 	readonly int[] _equipIndices = {-1, -1, -1, -1};
 
+	public OrbList()
+	{
+		this.items = new List<Orb>();
+		this.states = new List<OrbState>();
+	}
+	public OrbList(Node owner) : this()
+	{
+		this.owner = owner;
+	}
+
 	int integrityCheck;
-	public List<Orb> items;
-	public List<OrbState> states;
+	public readonly List<Orb> items;
+	public readonly List<OrbState> states;
+	public  Node owner;
 
 	public event Action<EventArgs> OnOrbsChanged;
 
@@ -63,7 +75,10 @@ public class OrbList : IList<Orb>
 	
 	public Orb this[int index]
 	{
-		get { return items[index]; }
+		get
+		{
+			return items[index];
+		}
 		set { SwapAt(index, value, false); }
 	}
 
@@ -140,6 +155,7 @@ public class OrbList : IList<Orb>
 		states.Add(OrbState.None);
 		items.Add(item);
 		var index = Count - 1;
+		if(item != null) item._node = owner;
 		FireEvent(Event.Added, index);
 		SetState(state, index, overwriteEquip);
 	}
@@ -208,6 +224,7 @@ public class OrbList : IList<Orb>
 	{
 		items.Insert(index, item);
 		states.Insert(index, state);
+		if(item!=null) item._node = owner;
 		FireEvent(Event.Added, state, item, index);
 		SetState(state, index, overwriteEquipment);
 
@@ -280,8 +297,10 @@ public class OrbList : IList<Orb>
 		}
 	}
 
-	public bool IsLocked(int index) => (states[index] & OrbState.Locked) == OrbState.Locked;
-	public bool IsActive(int index) => (states[index] & OrbState.Active) == OrbState.Active;
+	public bool IsLocked(int index) => 
+		states[index].HasFlag(OrbState.Locked);
+	public bool IsActive(int index) => 
+		states[index].HasFlag(OrbState.Active);
 
 
 	public struct EventArgs

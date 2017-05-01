@@ -7,8 +7,8 @@ using UnityEngine;
 public class Node : MonoBehaviour
 {
 	[NonSerialized] public Room room;
-	
-	public OrbList Orbs = new OrbList();
+
+	public OrbList Orbs;
 	public Rigidbody2D RB => GetComponent<Rigidbody2D>();
 	public MeshRenderer MR => GetComponent<MeshRenderer>();
 
@@ -42,7 +42,13 @@ public class Node : MonoBehaviour
 		get { return transform.position; }
 		set { transform.position = value; }
 	}
-	
+
+	public void OnValidate()
+	{
+
+		if (Orbs == null) Orbs = new OrbList(this);
+		else Orbs.owner = this;
+	}
 	public void Awake()
 	{
 		//Ordering is important here.

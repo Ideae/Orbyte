@@ -62,9 +62,9 @@ public class OrbList : IList<Orb>
 	}
 
 	int integrityCheck;
-	public readonly List<Orb> items;
-	public readonly List<OrbState> states;
-	public  Node owner;
+	public List<Orb> items;
+	public List<OrbState> states;
+	public Node owner;
 
 	public event Action<EventArgs> OnOrbsChanged;
 
@@ -85,7 +85,7 @@ public class OrbList : IList<Orb>
 	void FireEvent(Event e, OrbState s, Orb item, int index)
 	{
 		integrityCheck = Random.Range(int.MinValue, int.MaxValue);
-		var args = new EventArgs { eventType = e, state = s, orb = item, index = index };
+		var args = new EventArgs { eventType = e, state = s, orb = item, index = index, list = this};
 		item?.OnStateChanged(args);
 		OnOrbsChanged?.Invoke(args);
 	}
@@ -279,13 +279,11 @@ public class OrbList : IList<Orb>
 		FireEvent(Event.Equipped, states[index], items[index], index);
 
 	}
-	public void InstantiateAll(Node node)
+	public void InstantiateAll()
 	{
 		for (var index = 0; index < items.Count; index++)
 		{
-			items[index] = items[index].Clone();
-			items[index]._node = node;
-			SetState(states[index], index, true);
+			this.SwapAt(index, items[index].Clone(), false, states[index]);
 		}
 	}
 
@@ -309,6 +307,7 @@ public class OrbList : IList<Orb>
 		public OrbState state;
 		public Orb orb;
 		public int index;
+		public OrbList list;
 	}
 
 	public T Get<T>(bool active = false) where T : class 

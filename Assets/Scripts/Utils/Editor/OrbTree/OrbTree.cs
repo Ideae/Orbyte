@@ -58,6 +58,8 @@ public partial class OrbTree : TreeView
 
 	protected override IList<TreeViewItem> BuildRows(TreeViewItem root)
 	{
+
+		idCounter++;
 		var ids = GetExpanded();
 		var ret = new List<TreeViewItem>();
 		BuildRecursive(ret, root, ids);
@@ -65,38 +67,38 @@ public partial class OrbTree : TreeView
 		return ret;
 	}
 
-	void BuildRecursive(List<TreeViewItem> refList, TreeViewItem node, IList<int> expandedIds)
+	void BuildRecursive(List<TreeViewItem> refList, TreeViewItem parentItem, IList<int> expandedIds)
 	{
-		itemsById[node.id] = node;
-		refList.Add(node);
-		if (!expandedIds.Contains(node.id)) return;
-		var orb = (node as OrbItem)?.orb;
+		itemsById[parentItem.id] = parentItem;
+		refList.Add(parentItem);
+		if (!expandedIds.Contains(parentItem.id)) return;
+		var orb = (parentItem as OrbItem)?.orb;
 		if (orb != null)
 		{
 			foreach (var fpInfo in orb.InspectableVariables)
 			{
-				var child = node.children.FirstOrDefault(item => (item as FPInfoItem)?.Info == fpInfo);
+				var child = parentItem.children.FirstOrDefault(item => (item as FPInfoItem)?.Info == fpInfo);
 				if (child == null)
 				{
 					child = FastType<OrbList>.type.IsAssignableFrom(fpInfo.VariableType)
 						? new OrbListItem(orb, fpInfo, idCounter++)
 						: new FPInfoItem(fpInfo, idCounter++);
-					node.AddChild(child);
+					parentItem.AddChild(child);
 				}
 
 				BuildRecursive(refList, child, expandedIds);
 			}
 			return;
 		}
-		var orblist = (node as OrbListItem)?.list;
+		var orblist = (parentItem as OrbListItem)?.list;
 		if (orblist != null)
 			foreach (var o in orblist)
 			{
-				var child = node.children.FirstOrDefault(item => (item as OrbItem)?.orb == o);
+				var child = parentItem.children.FirstOrDefault(item => (item as OrbItem)?.orb == o);
 				if (child == null)
 				{
 					child = new OrbItem(o, idCounter++);
-					node.AddChild(child);
+					parentItem.AddChild(child);
 				}
 				BuildRecursive(refList, child, expandedIds);
 			}

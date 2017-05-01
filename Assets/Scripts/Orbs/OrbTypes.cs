@@ -5,7 +5,7 @@ public interface IOrbType
 	Node Node { get; }
 }
 
-public interface IEquippable {}
+public interface IEquippable: IOrbType { }
 
 public interface IDrawOrb : IOrbType
 {

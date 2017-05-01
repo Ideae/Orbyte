@@ -41,10 +41,14 @@ public abstract class Orb<T> : Orb where T : Orb<T>
 		var subtypes = AllOrbTypes.Where(i => i.IsAssignableFrom(type)).ToArray();
 		//This sets _equipSlots to a flag where all the bits are set which represent the slots that this Orb can be equipped to.
 		//This is determined by the Interfaces that this type implements.
-		_equipSlots = OrbList.EquipTypes.Select((t, i) => new {t, i})
-		                     .Where(a => subtypes.Contains(a.t))
-		                     .Select(a => OrbList.EquipSlots[a.i])
-		                     .Aggregate((EquipSlot)0, (a,b)=>a|b);
+		EquipSlot result = (EquipSlot)0;
+		for (int i = 0; i < OrbList.EquipTypes.Length; i++)
+			if (subtypes.Contains(OrbList.EquipTypes[i]))
+			{
+				var slot = OrbList.EquipSlots[i];
+				result = result | slot;
+			}
+		_equipSlots = result;
 	}
 
 	public static T CreateOrb() => CreateInstance<T>();
@@ -114,7 +118,7 @@ public abstract class Orb : ScriptableObject, IOrbType
 	protected virtual void OnAttach() {}
 	protected virtual void OnActivate() {}
 	protected virtual void OnDeactivate() {}
-	protected virtual void OnDetach() {}
+	protected virtual void OnDetach(Node oldNode) {}
 	protected virtual void OnEquip(){}
 	protected virtual void OnUnequip() {}
 	protected virtual void OnDelete() { }
@@ -159,12 +163,11 @@ public abstract class Orb : ScriptableObject, IOrbType
 		switch (args.eventType)
 		{
 			case OrbList.Event.Removed:
-				this.OnDetach();
+				if(args.list.owner!=null) this.OnDetach(args.list.owner);
 				Debug.Assert(Node == null);
 				break;
 			case OrbList.Event.Added:
-				this.OnAttach();
-				Debug.Assert(Node != null);
+				if(Node != null) this.OnAttach();
 				break;
 			case OrbList.Event.Equipped:
 				OnEquip();
@@ -192,7 +195,7 @@ public abstract class Orb : ScriptableObject, IOrbType
 			case OrbList.Event.Deactivated:
 				OnDeactivate();
 				Debug.Assert(Node != null);
-				Debug.Assert(!Node.Orbs.IsActive(args.index));
+				//Debug.Assert(!Node.Orbs.IsActive(args.index));
 				break;
 			default:
 				throw new ArgumentOutOfRangeException();

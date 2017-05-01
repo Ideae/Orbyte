@@ -10,8 +10,9 @@ public class Player : Orb<Player>, IAimedActionOrb, IAffectSelfOrb
 		get { return true; }
 		set { }
 	}
+	
 
-	public String[] ss;
+
 	
 	public void AffectSelf()
 	{
@@ -41,6 +42,6 @@ public class Player : Orb<Player>, IAimedActionOrb, IAffectSelfOrb
 
 	protected override void OnAttach()
 	{
-		UIManager.Instance.RegisterPlayer(this);
+		if(Application.isPlaying) UIManager.Instance?.RegisterPlayer(this);
 	}
 }

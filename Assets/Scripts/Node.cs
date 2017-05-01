@@ -52,7 +52,7 @@ public class Node : MonoBehaviour
 	public void Awake()
 	{
 		//Ordering is important here.
-		Orbs.InstantiateAll(this);
+		Orbs.InstantiateAll();
 		Orbs.OnOrbsChanged += OnOrbListChanged;
 
 		if (Orbs.Core != null) return;

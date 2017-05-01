@@ -10,7 +10,7 @@ public class Tracer : Orb<Tracer>
 	public Material _material;
 
 
-	public TrailRenderer TR => Node.gameObject.GetComponent<TrailRenderer>();
+	private TrailRenderer TR;
 
 	[SerializeField] [HideInInspector] Color _color = Color.white;
 	[CustomProperty(nameof(_color))]
@@ -51,11 +51,11 @@ public class Tracer : Orb<Tracer>
 
 	protected override void OnAttach()
 	{
-		if (TR == null) Node.gameObject.AddComponent<TrailRenderer>();
+		if (TR == null) TR =  Node.gameObject.AddComponent<TrailRenderer>();
 		
 	}
 
-	protected override void OnDetach()
+	protected override void OnDetach(Node oldNode)
 	{
 		if(TR!= null) Destroy(TR);
 	}

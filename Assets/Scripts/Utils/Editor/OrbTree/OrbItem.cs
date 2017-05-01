@@ -57,7 +57,12 @@ public partial class OrbTree : TreeView
 					var toggleRect = cellRect;
 					toggleRect.width = ToggleWidth;
 					var equip = EditorGUI.Toggle(cellRect, oldEquip);
-					if (oldEquip != equip) orblist.SetEquipped(orb.EquipSlots,index,equip);
+					if (oldEquip != equip)
+					{
+						Undo.RecordObject(orbTree.rootNode, "Equip");
+
+						orblist.SetEquipped(orb.EquipSlots,index,equip);
+					}
 					break;
 
 				case 2:
@@ -68,9 +73,15 @@ public partial class OrbTree : TreeView
 					toggleRect.width = ToggleWidth;
 					if (toggleRect.xMax < cellRect.xMax)
 					{
+
 						var oldActive = orb.IsActive;
 						var active = EditorGUI.Toggle(toggleRect, oldActive);
-						if (active != oldActive) orb.IsActive = active;
+						if (active != oldActive)
+						{
+
+							Undo.RecordObject(orbTree.rootNode, "Toggle");
+							orb.IsActive = active;
+						}
 					}
 
 					// Default icon and label
@@ -107,6 +118,7 @@ public partial class OrbTree : TreeView
 								if((orb!= null) && (orb._node!=null))
 									orb._node.Orbs[i] = newOrb?.Clone();
 							}
+							orbTree.Reload();
 						}
 					}
 					break;

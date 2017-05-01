@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UnityEditor;
+using UnityEngine;
 using static UnityEditor.EditorGUIUtility;
 
 public partial class OrbTree
@@ -29,10 +30,22 @@ public partial class OrbTree
 
 					var clear = GUI.Button(lRect, "C");
 					lRect.x += lRect.width;
-					if(clear) list.Clear();
+					if (clear)
+					{
+						Undo.RecordObject(list.owner,$"Clearing orbs from {list.owner}");
+						list.Clear();
+						orbTree.Reload();
+
+					}
 					var add = GUI.Button(lRect, "+");
 					lRect.x += lRect.width;
-					if(add) list.Add(null);
+					if (add)
+					{
+						Undo.RecordObject(list.owner,$"Adding New orb to {list.owner}");
+						list.Add(null);
+						orbTree.Reload();
+
+					}
 					var selectedIDs = orbTree.GetSelection();
 					if (selectedIDs.Count != 1) Debug.LogWarning("Select ONE orb");
 					else
@@ -45,15 +58,24 @@ public partial class OrbTree
 						{
 							var remove = GUI.Button(lRect, "-");
 							lRect.x += lRect.width;
-							if(remove) list.RemoveAt(pos);
+							if (remove)
+							{
+								Undo.RecordObject(list.owner, $"Removing orbs on {list.owner}");
+								list.RemoveAt(pos);
+								orbTree.Reload();
+
+							}
 
 							var up = GUI.Button(lRect, "^");
 							if (up && pos != 0)
 							{
+								Undo.RecordObject(list.owner, $"Moving orb on {list.owner}");
 								var s = list.states[pos];
 								var o = list[pos];
 								list.RemoveAt(pos);
 								list.Insert(pos-1,o, s, false);
+								orbTree.Reload();
+
 							}
 
 							lRect.x += lRect.width;
@@ -61,10 +83,13 @@ public partial class OrbTree
 
 							if (down && pos != list.Count-1)
 							{
+								Undo.RecordObject(list.owner, $"Moving orb on {list.owner}");
 								var s = list.states[pos];
 								var o = list[pos];
 								list.RemoveAt(pos);
 								list.Insert(pos + 1, o, s, false);
+								orbTree.Reload();
+								
 							}
 						}
 					}

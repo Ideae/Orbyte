@@ -11,61 +11,31 @@ using System;
 /// <summary>
 /// Generates a safe wrapper for Tags.
 /// </summary>
+
 public static class Tags
 {
-public static readonly string Untagged = "Untagged";
-public static readonly string Respawn = "Respawn";
-public static readonly string Finish = "Finish";
-public static readonly string EditorOnly = "EditorOnly";
-public static readonly string MainCamera = "MainCamera";
-public static readonly string Player = "Player";
-public static readonly string GameController = "GameController";
-public static readonly string T1 = "T1";
-public static readonly string T2 = "T2";
+	public static readonly string Untagged = "Untagged";
+	public static readonly string Respawn = "Respawn";
+	public static readonly string Finish = "Finish";
+	public static readonly string EditorOnly = "EditorOnly";
+	public static readonly string MainCamera = "MainCamera";
+	public static readonly string Player = "Player";
+	public static readonly string GameController = "GameController";
+	public static readonly string T1 = "T1";
+	public static readonly string T2 = "T2";
+
 }
 
 public enum Layers
 {
-Default = 0,
-TransparentFX = 1,
-IgnoreRaycast = 2,
-Water = 4,
-UI = 5,
-Walls = 8,
-Nodes = 9,
-Bullets = 10,
-Upper = 11,
-}
+	Default = 0,
+	TransparentFX = 0,
+	IgnoreRaycast = 0,
+	Water = 0,
+	UI = 0,
+	Walls = 0,
+	Nodes = 0,
+	Bullets = 0,
+	Upper = 0,
 
-public static class OrbLists
-{
-
-static readonly Dictionary<Type, Func<IList>> dict = new Dictionary<Type, Func<IList>>();
-
-public static IList Create(Type t) => dict[t]();
-
-static OrbLists()
-{
-dict[typeof(Tracer)] = ()=> new List< Tracer>();
-dict[typeof(Watch)] = ()=> new List< Watch>();
-dict[typeof(Gravity)] = ()=> new List< Gravity>();
-dict[typeof(Core)] = ()=> new List< Core>();
-dict[typeof(ForceMove)] = ()=> new List< ForceMove>();
-dict[typeof(Shooter)] = ()=> new List< Shooter>();
-dict[typeof(HueShifter)] = ()=> new List< HueShifter>();
-dict[typeof(Lifetime)] = ()=> new List< Lifetime>();
-dict[typeof(Orb)] = ()=> new List< Orb>();
-dict[typeof(IEquippable)] = ()=> new List< IEquippable>();
-dict[typeof(IDrawOrb)] = ()=> new List< IDrawOrb>();
-dict[typeof(IAffectSelfOrb)] = ()=> new List< IAffectSelfOrb>();
-dict[typeof(IAffectOtherOrb)] = ()=> new List< IAffectOtherOrb>();
-dict[typeof(IFixedAffectOther)] = ()=> new List< IFixedAffectOther>();
-dict[typeof(IFixedAffectSelf)] = ()=> new List< IFixedAffectSelf>();
-dict[typeof(IAimedActionOrb)] = ()=> new List< IAimedActionOrb>();
-dict[typeof(IActionOrb)] = ()=> new List< IActionOrb>();
-dict[typeof(IMovementOrb)] = ()=> new List< IMovementOrb>();
-dict[typeof(Bomb)] = ()=> new List< Bomb>();
-dict[typeof(Player)] = ()=> new List< Player>();
-
-}
 }

@@ -33,7 +33,7 @@ public partial class OrbTree : TreeView
 			}
 		}
 
-		private void CellGUI(OrbTree orbTree, ref RowGUIArgs args, int colIndex)
+		protected virtual void CellGUI(OrbTree orbTree, ref RowGUIArgs args, int colIndex)
 		{
 			var column = args.GetColumn(colIndex);
 			var cellRect = args.GetCellRect(colIndex);

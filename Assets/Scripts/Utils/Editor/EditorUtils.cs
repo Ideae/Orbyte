@@ -10,7 +10,7 @@ public static class EditorUtils {
 	[MenuItem("Generate/Code")]
 	public static void GenerateCode()
 	{
-		CodeGeneration.CodeGenerator.GenerateCode(Orb.AllOrbTypes);
+		CodeGenerator.GenerateCode(Orb.AllOrbTypes);
 	}
 	[MenuItem("Generate/OrbDefaults")]
 	public static void GenerateOrbDefaults()

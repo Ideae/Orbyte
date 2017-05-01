@@ -151,3 +151,7 @@ class __Color : WriterObject<Color, __Color> { public Color _Color; public overr
 
 class __Material : WriterObject<Material, __Material> { public Material _Material; public override Material value { get { return _Material; } set { _Material = value; } } }
 
+class __OrbList : WriterObject<OrbList, __OrbList> { public OrbList _OrbList; public override OrbList value { get { return _OrbList; } set { _OrbList = value; } } }
+
+class __LayerMask : WriterObject<LayerMask, __LayerMask> { public LayerMask _LayerMask; public override LayerMask value { get { return _LayerMask; } set { _LayerMask = value; } } }
+

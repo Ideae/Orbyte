@@ -9,7 +9,7 @@ public partial class OrbTree : TreeView
 
 	static int idCounter;
 
-	readonly FPInfo NodeOrbProperty = new FPInfo(FastType<Node>.type.GetProperty(nameof(Node.Orbs)));
+	readonly FPInfo NodeOrbProperty = new FPInfo(FastType<Node>.type.GetField(nameof(Node.Orbs)));
 	readonly Node rootNode;
 	readonly Dictionary<int, TreeViewItem> itemsById = new Dictionary<int, TreeViewItem>();
 	static float RowHeights = 20;
@@ -38,24 +38,20 @@ public partial class OrbTree : TreeView
 	{
 
 		var orbs = rootNode.Orbs.ToArray();
-		var ogNode = orbs.Select(o => o._node).ToArray();
-		foreach (var orb in orbs) { orb._node = rootNode; }
+		var ogNodes = orbs.Select(o => o?._node).ToArray();
+		foreach (var orb in orbs.Where(o=>o!=null)) { orb._node = rootNode; }
 		(args.item as OrbItem)?.RowGUI(this, ref args);
 		(args.item as FPInfoItem)?.RowGUI(this, ref args);
 
-		for (var index = 0; index < orbs.Length; index++) orbs[index]._node = ogNode[index];
+		for (var index = 0; index < orbs.Length; index++)
+		{
+			if (orbs[index] != null) orbs[index]._node = ogNodes[index];
+		}
 	}
 
 	protected override TreeViewItem BuildRoot()
 	{
-		// BuildRoot is called every time Reload is called to ensure that TreeViewItems 
-		// are created from data. Here we create a fixed set of items. In a real world example,
-		// a data model should be passed into the TreeView and the items created from the model.
-
-		// This section illustrates that IDs should be unique. The root item is required to 
-		// have a depth of -1, and the rest of the items increment from that.
-
-		var root = new OrbListItem(rootNode, NodeOrbProperty, idCounter++) {depth = -1};
+		var root = new OrbListItem(rootNode, NodeOrbProperty, idCounter=0) {depth = -1};
 		// Return root of the tree
 		return root;
 	}
@@ -82,7 +78,7 @@ public partial class OrbTree : TreeView
 				var child = node.children.FirstOrDefault(item => (item as FPInfoItem)?.Info == fpInfo);
 				if (child == null)
 				{
-					child = FastType<IList<Orb>>.type.IsAssignableFrom(fpInfo.VariableType)
+					child = FastType<OrbList>.type.IsAssignableFrom(fpInfo.VariableType)
 						? new OrbListItem(orb, fpInfo, idCounter++)
 						: new FPInfoItem(fpInfo, idCounter++);
 					node.AddChild(child);

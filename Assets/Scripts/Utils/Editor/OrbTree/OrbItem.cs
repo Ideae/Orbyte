@@ -61,7 +61,7 @@ public partial class OrbTree : TreeView
 					break;
 
 				case 2:
-
+					if (orb == null) break;
 					// Make a toggle button to the left of the label text
 					toggleRect = cellRect;
 					toggleRect.x += orbTree.GetContentIndent(this);
@@ -91,20 +91,21 @@ public partial class OrbTree : TreeView
 						if (writerObj.value != orb)
 						{
 							var newOrb = writerObj.value;
-							Undo.RecordObject(orb.Node, $"Swap {orb.name} for {newOrb.name} on {orb._node.name}");
-							orblist = orb._node.Orbs;
+							Undo.RecordObject(orbTree.rootNode, $"Swap {orb?.name} for {newOrb?.name} on {orb?._node?.name}");
+							orblist = ((OrbListItem)parent).list;
 							var i = orblist.IndexOf(orb);
 							if (!Application.isPlaying)
 							{
 								orblist[i] = newOrb;
-								newOrb._node = orb._node;
+								if(newOrb!= null) newOrb._node = orb?._node;
 								orb._node = null;
 								this.children.Clear();
 
 							}
 							else
 							{
-								orb._node.Orbs[i] = newOrb.Clone();
+								if((orb!= null) && (orb._node!=null))
+									orb._node.Orbs[i] = newOrb?.Clone();
 							}
 						}
 					}

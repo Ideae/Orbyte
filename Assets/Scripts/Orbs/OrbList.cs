@@ -71,7 +71,7 @@ public class OrbList : IList<Orb>
 	{
 		integrityCheck = Random.Range(int.MinValue, int.MaxValue);
 		var args = new EventArgs { eventType = e, state = s, orb = item, index = index };
-		item.OnStateChanged(args);
+		item?.OnStateChanged(args);
 		OnOrbsChanged?.Invoke(args);
 	}
 
@@ -251,7 +251,7 @@ public class OrbList : IList<Orb>
 			//Remove currently equiped orb
 			if ((oldIndex == index) && equipped) return; //Orb at index is already equipped
 			if ((oldIndex != index) && !overwrite) return;
-			Debug.Assert(states[oldIndex].HasFlag(state));
+			Debug.Assert(states[oldIndex].HasFlag((OrbState)state));
 			states[oldIndex] &= (OrbState)~state;
 			_equipIndices[eqNum] = -1;
 			FireEvent(Event.UnEquipped, states[oldIndex], items[oldIndex], oldIndex);
@@ -301,10 +301,7 @@ public class OrbList : IList<Orb>
 		return null;
 	}
 
-	public TypeEnumerator<T> GetAll<T>(bool activeOnly = false) where T : class
-	{
-		return new TypeEnumerator<T>(this, activeOnly);
-	}
+	public TypeEnumerator<T> GetAll<T>(bool activeOnly = false) where T : class => new TypeEnumerator<T>(this, activeOnly);
 
 	public TypeEnumerator<Orb> AllActiveOrbs => GetAll<Orb>(true);
 

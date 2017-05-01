@@ -24,11 +24,13 @@ public struct FPInfo
 
 	public FPInfo(FieldInfo fieldInfo)
 	{
+		Debug.Assert(fieldInfo!=null);
 		memberInfo = fieldInfo;
 	}
 
 	public FPInfo(PropertyInfo propertyInfo)
 	{
+		Debug.Assert(propertyInfo != null);
 		memberInfo = propertyInfo;
 	}
 

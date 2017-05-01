@@ -82,7 +82,7 @@ class NodeEditor :Editor
 		bool butt = GUI.Button(GetRect(text, GUIStyle.none), text);
 		if (butt) Setup(false);
 
-		DrawDefaultInspector(); 
+		DrawPropertiesExcluding(serializedObject,"Orbs");
 
 		var width = currentViewWidth - 40;
 		var rect = GetRect(width, HEIGHT);

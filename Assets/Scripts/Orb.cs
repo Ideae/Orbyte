@@ -20,7 +20,7 @@ public abstract class Orb<T> : Orb where T : Orb<T>
 
 	static Orb()
 	{
-		var customProperties = new List<CustomProperty>();
+		//var customProperties = new List<CustomProperty>();
 		inspectableVariables = new List<FPInfo>();
 		var type = FastType<T>.type;
 		foreach (var p in type.GetProperties(BindingFlags.Instance | BindingFlags.Public))
@@ -28,7 +28,7 @@ public abstract class Orb<T> : Orb where T : Orb<T>
 			var cp = p.GetCustomAttribute<CustomPropertyAttribute>();
 			if (cp != null)
 			{
-				customProperties.Add(new CustomProperty(p, type.GetField(cp.fieldName, BindingFlags.Instance)));
+				//customProperties.Add(new CustomProperty(p, type.GetField(cp.fieldName, BindingFlags.Instance)));
 				inspectableVariables.Add(new FPInfo(p));
 			}
 		}
@@ -41,7 +41,7 @@ public abstract class Orb<T> : Orb where T : Orb<T>
 		_equipSlots = OrbList.EquipTypes.Select((t, i) => new {t, i})
 		                     .Where(a => subtypes.Contains(a.t))
 		                     .Select(a => OrbList.EquipSlots[a.i])
-		                     .Aggregate((a,b)=>a|b);
+		                     .Aggregate((EquipSlot)0, (a,b)=>a|b);
 	}
 
 	public static T CreateOrb() => CreateInstance<T>();
@@ -76,7 +76,7 @@ public abstract class Orb : ScriptableObject, IOrbType
 	}
 	
 
-	[NonSerialized] public Node _node;
+	[NonSerialized, HideInInspector] public Node _node;
 	[HideInInspector] public Node Node => _node;
 
 	int _cachedIndex;

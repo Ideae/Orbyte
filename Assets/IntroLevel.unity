@@ -767,6 +767,16 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 114963985629851812, guid: 5b50e9551b463644f9f4ced830be24c3,
+        type: 2}
+      propertyPath: Orbs.items.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114963985629851812, guid: 5b50e9551b463644f9f4ced830be24c3,
+        type: 2}
+      propertyPath: Orbs.states.Array.size
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4561364194871702, guid: 5b50e9551b463644f9f4ced830be24c3, type: 2}
       propertyPath: m_LocalPosition.x
       value: -4.1128182
@@ -805,6 +815,32 @@ Prefab:
       value: 
       objectReference: {fileID: 11400000, guid: fa0526ef2ed30d04e880808fe27de112,
         type: 2}
+    - target: {fileID: 114963985629851812, guid: 5b50e9551b463644f9f4ced830be24c3,
+        type: 2}
+      propertyPath: Orbs.states.Array.data[1]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114963985629851812, guid: 5b50e9551b463644f9f4ced830be24c3,
+        type: 2}
+      propertyPath: Orbs.states.Array.data[0]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114963985629851812, guid: 5b50e9551b463644f9f4ced830be24c3,
+        type: 2}
+      propertyPath: Orbs.items.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 3f83ba5530a291a41aae29b4df71da5c,
+        type: 2}
+    - target: {fileID: 114963985629851812, guid: 5b50e9551b463644f9f4ced830be24c3,
+        type: 2}
+      propertyPath: Orbs.items.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: e2b640d7bcec7964899cdc0482ab3f29,
+        type: 2}
+    - target: {fileID: 1679608327609746, guid: 5b50e9551b463644f9f4ced830be24c3, type: 2}
+      propertyPath: m_Layer
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5b50e9551b463644f9f4ced830be24c3, type: 2}
   m_IsPrefabParent: 0

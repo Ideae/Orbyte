@@ -9,8 +9,8 @@ public class Node : MonoBehaviour
 	[NonSerialized] public Room room;
 	
 	public OrbList Orbs = new OrbList();
-	public Rigidbody2D RB { get; private set; }
-	public MeshRenderer MR { get; private set; }
+	public Rigidbody2D RB => GetComponent<Rigidbody2D>();
+	public MeshRenderer MR => GetComponent<MeshRenderer>();
 
 	[NonSerialized] public bool HasPositionTarget = false;
 	//This could be either a target position or direction depending on HasPositionTarget
@@ -45,8 +45,6 @@ public class Node : MonoBehaviour
 	
 	public void Awake()
 	{
-		RB = GetComponent<Rigidbody2D>();
-		MR = GetComponent<MeshRenderer>();
 		//Ordering is important here.
 		Orbs.InstantiateAll(this);
 		Orbs.OnOrbsChanged += OnOrbListChanged;
